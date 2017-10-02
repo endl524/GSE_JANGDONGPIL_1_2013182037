@@ -14,8 +14,11 @@ but WITHOUT ANY WARRANTY.
 #include "Dependencies\freeglut.h"
 
 #include "Renderer.h"
+#include "Object.h"
 
-Renderer *g_Renderer = NULL;
+Renderer* g_Renderer = NULL;
+Object* g_Object_rectAngle = new Object();
+int a = 0;
 
 void RenderScene(void)
 {
@@ -23,7 +26,11 @@ void RenderScene(void)
 	glClearColor(0.0f, 0.3f, 0.3f, 1.0f);
 
 	// Renderer Test
-	g_Renderer->DrawSolidRect(0, 0, 0, 4, 1, 0, 1, 1);
+	g_Renderer->DrawSolidRect(
+		g_Object_rectAngle->getRectLocation_X(), g_Object_rectAngle->getRectLocation_Y(), g_Object_rectAngle->getRectLocation_Z(),
+		g_Object_rectAngle->getRectSize(),
+		g_Object_rectAngle->getRectColor_R(), g_Object_rectAngle->getRectColor_G(), g_Object_rectAngle->getRectColor_B(), g_Object_rectAngle->getRectColor_A()
+	);
 
 	glutSwapBuffers();
 }
@@ -74,14 +81,20 @@ int main(int argc, char **argv)
 		std::cout << "Renderer could not be initialized.. \n";
 	}
 
+	// SetObject...
+	g_Object_rectAngle->setRectInfo(0, 0, 0, 4, 1, 0, 1, 1);
+
+	//-------------------------------
 	glutDisplayFunc(RenderScene);
 	glutIdleFunc(Idle);
 	glutKeyboardFunc(KeyInput);
 	glutMouseFunc(MouseInput);
 	glutSpecialFunc(SpecialKeyInput);
+	//-------------------------------
 
 	glutMainLoop();
 
+	delete g_Object_rectAngle;
 	delete g_Renderer;
 
     return 0;
