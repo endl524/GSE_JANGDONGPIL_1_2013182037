@@ -1,37 +1,56 @@
 #pragma once
+
+
+struct Vector2D {
+	int x;
+	int y;
+};
+
 class Object
 {
+private:
+	Vector2D m_objectPosition2D;
+	int m_objectPosition_Z;
+	int m_objectSize;
+	float m_objectColor_R, m_objectColor_G, m_objectColor_B, m_objectColor_A; // 색상
+	Vector2D m_objectVelocity; // 속도벡터
+
 public:
 	Object();
 	~Object();
 
-	// setRectAngle..
-	void setRectInfo(int x, int y, int z, int size, int r, int g, int b, int a);
-	//
-	int getRectLocation_X() { return m_rectLocation_X; };
-	void setRectLocation_X(int x) { m_rectLocation_X = x; };
-	int getRectLocation_Y() { return m_rectLocation_Y; };
-	void setRectLocation_Y(int y) { m_rectLocation_Y = y; };
-	int getRectLocation_Z() { return m_rectLocation_Z; };
-	void setRectLocation_Z(int z) { m_rectLocation_Z = z; };
-	//
-	int getRectSize() { return m_rectSize; };
-	void setRectSize(int size) { m_rectSize = size; };
-	//
-	int getRectColor_R() { return m_rectColor_R; };
-	void setRectColor_R(int r) { m_rectColor_R = r; };
-	int getRectColor_G() { return m_rectColor_G; };
-	void setRectColor_G(int g) { m_rectColor_G = g; };
-	int getRectColor_B() { return m_rectColor_B; };
-	void setRectColor_B(int b) { m_rectColor_B = b; };
-	int getRectColor_A() { return m_rectColor_A; };
-	void setRectColor_A(int a) { m_rectColor_A = a; };
-	//
+	// setRectAngle
+	void setObjectInfo(int x, int y, int z, int size, float r, float g, float b, float a);
 
-private:
-	int m_rectLocation_X, m_rectLocation_Y, m_rectLocation_Z;
-	int m_rectSize;
-	int m_rectColor_R, m_rectColor_G, m_rectColor_B, m_rectColor_A;
-	
+	// position
+	int getObjectPosition_X() { return m_objectPosition2D.x; };
+	void setObjectPosition_X(int x) { m_objectPosition2D.x = x; };
+	int getObjectPosition_Y() { return m_objectPosition2D.y; };
+	void setObjectPosition_Y(int y) { m_objectPosition2D.y = y; };
+	int getObjectPosition_Z() { return m_objectPosition_Z; };
+	void setObjectPosition_Z(int z) { m_objectPosition_Z = z; };
+
+	// size
+	int getObjectSize() { return m_objectSize; };
+	void setObjectSize(int size) { m_objectSize = size; };
+
+	// color
+	float getObjectColor_R() { return m_objectColor_R; };
+	void setObjectColor_R(float r) { m_objectColor_R = r; };
+	float getObjectColor_G() { return m_objectColor_G; };
+	void setObjectColor_G(float g) { m_objectColor_G = g; };
+	float getObjectColor_B() { return m_objectColor_B; };
+	void setObjectColor_B(float b) { m_objectColor_B = b; };
+	float getObjectColor_A() { return m_objectColor_A; };
+	void setObjectColor_A(float a) { m_objectColor_A = a; };
+
+	// Velocity
+	Vector2D getObjectVelocity() { return m_objectVelocity; }
+	void setObjectVelocity(int x, int y) { m_objectVelocity.x = x; m_objectVelocity.y = y; }
+	void Move(int time);
+
+
+	// update()
+	void update();
 };
 

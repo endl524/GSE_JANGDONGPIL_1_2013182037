@@ -15,22 +15,21 @@ but WITHOUT ANY WARRANTY.
 
 #include "Renderer.h"
 #include "Object.h"
+#include "SceneMgr.h"
+
+using namespace std;
 
 Renderer* g_Renderer = NULL;
-Object* g_Object_rectAngle = new Object();
-int a = 0;
+SceneMgr* g_SceneMgr = NULL;
 
 void RenderScene(void)
 {
+	// background setting
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.0f, 0.3f, 0.3f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-	// Renderer Test
-	g_Renderer->DrawSolidRect(
-		g_Object_rectAngle->getRectLocation_X(), g_Object_rectAngle->getRectLocation_Y(), g_Object_rectAngle->getRectLocation_Z(),
-		g_Object_rectAngle->getRectSize(),
-		g_Object_rectAngle->getRectColor_R(), g_Object_rectAngle->getRectColor_G(), g_Object_rectAngle->getRectColor_B(), g_Object_rectAngle->getRectColor_A()
-	);
+	g_SceneMgr->UpdateObjects();
+	g_SceneMgr->DrawObjects();
 
 	glutSwapBuffers();
 }
@@ -67,23 +66,24 @@ int main(int argc, char **argv)
 	glewInit();
 	if (glewIsSupported("GL_VERSION_3_0"))
 	{
-		std::cout << " GLEW Version is 3.0\n ";
+		cout << " GLEW Version is 3.0\n ";
 	}
 	else
 	{
-		std::cout << "GLEW 3.0 not supported\n ";
+		cout << "GLEW 3.0 not supported\n ";
 	}
 
 	// Initialize Renderer
 	g_Renderer = new Renderer(500, 500);
 	if (!g_Renderer->IsInitialized())
 	{
-		std::cout << "Renderer could not be initialized.. \n";
+		cout << "Renderer could not be initialized.. \n";
 	}
 
-	// SetObject...
-	g_Object_rectAngle->setRectInfo(0, 0, 0, 4, 1, 0, 1, 1);
-
+	// Initialize SceneMgr
+	g_SceneMgr = new SceneMgr();
+	cout << "\nScene Manager Loaded" << endl;
+	g_SceneMgr->BuildObjects();
 	//-------------------------------
 	glutDisplayFunc(RenderScene);
 	glutIdleFunc(Idle);
@@ -94,9 +94,11 @@ int main(int argc, char **argv)
 
 	glutMainLoop();
 
-	delete g_Object_rectAngle;
+	g_SceneMgr->DestroyObjects();
+	cout << "\nScene Manager deleted" << endl;
+	delete g_SceneMgr;
 	delete g_Renderer;
-
+	
     return 0;
 }
 
