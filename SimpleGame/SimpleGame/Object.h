@@ -6,6 +6,13 @@ struct Vector2D {
 	int y;
 };
 
+struct Collider {
+	int minX;
+	int minY;
+	int maxX;
+	int maxY;
+};
+
 class Object
 {
 private:
@@ -14,6 +21,7 @@ private:
 	int m_objectSize;
 	float m_objectColor_R, m_objectColor_G, m_objectColor_B, m_objectColor_A; // 색상
 	Vector2D m_objectVelocity; // 속도벡터
+	Collider m_objectCollider;
 
 public:
 	Object();
@@ -45,10 +53,14 @@ public:
 	void setObjectColor_A(float a) { m_objectColor_A = a; };
 
 	// Velocity
-	Vector2D getObjectVelocity() { return m_objectVelocity; }
-	void setObjectVelocity(int x, int y) { m_objectVelocity.x = x; m_objectVelocity.y = y; }
+	Vector2D getObjectVelocity() { return m_objectVelocity; };
+	void setObjectVelocityX(int x) { if (x > 10) x = 10; m_objectVelocity.x = x; };
+	void setObjectVelocityY(int y) { if (y > 10) y = 10; m_objectVelocity.y = y; };
 	void Move(int time);
 
+	// Collision
+	Collider getObjectCollider();
+	void WallCollision();
 
 	// update()
 	void update();

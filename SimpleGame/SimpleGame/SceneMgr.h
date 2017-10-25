@@ -10,7 +10,7 @@ class SceneMgr
 {
 private:
 	int m_maxObjectCount = MAX_OBJECTS_COUNT;
-	Object* m_pp_Object_RectAngleS[50];
+	Object* m_p_Object_RectAngleS[50];
 	Renderer* m_p_Renderer;
 	
 	
@@ -19,10 +19,11 @@ public:
 	~SceneMgr();
 
 	int getMaxObjectCount() { return m_maxObjectCount; };
-	Object** getObject() { return m_pp_Object_RectAngleS; };
+	Object** getObject() { return m_p_Object_RectAngleS; };
 
 	void BuildObjects();
 	void DrawObjects();
+	void ObjectsCollisionCheck();
 	void UpdateObjects();
 	void DestroyObjects();
 };
