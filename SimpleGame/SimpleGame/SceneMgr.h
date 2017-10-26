@@ -5,14 +5,14 @@
 #include <Windows.h>
 #include <mmsystem.h>
 
-#define MAX_OBJECTS_COUNT 50;
+#define MAX_OBJECTS_COUNT 10;
 
 class SceneMgr
 {
 private:
 	int m_maxObjectCount = MAX_OBJECTS_COUNT;
 	int m_curObjectCount = -1;
-	Object* m_p_Object_RectAngleS[50];
+	Object* m_p_Object_RectAngleS[10];
 	Renderer* m_p_Renderer;
 	
 	
