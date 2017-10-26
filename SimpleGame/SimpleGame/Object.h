@@ -23,7 +23,7 @@ private:
 	Vector2D m_objectVelocity; // º”µµ∫§≈Õ
 	Collider m_objectCollider;
 
-	float m_objectLife = 10.0f;
+	float m_objectLife = 50.0f;
 	bool m_objectIsDead = false;
 
 public:

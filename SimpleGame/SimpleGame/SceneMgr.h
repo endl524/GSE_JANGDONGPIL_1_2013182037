@@ -7,12 +7,11 @@
 
 #define MAX_OBJECTS_COUNT 50;
 
-// add update get
-
 class SceneMgr
 {
 private:
 	int m_maxObjectCount = MAX_OBJECTS_COUNT;
+	int m_curObjectCount = -1;
 	Object* m_p_Object_RectAngleS[50];
 	Renderer* m_p_Renderer;
 	
@@ -24,7 +23,7 @@ public:
 	int getMaxObjectCount() { return m_maxObjectCount; };
 	Object** getObject() { return m_p_Object_RectAngleS; };
 
-	void BuildObjects();
+	void BuildObjects(float x, float y);
 	void DrawObjects();
 	void ObjectsCollisionCheck();
 	void UpdateObjects(DWORD elapsedTime);

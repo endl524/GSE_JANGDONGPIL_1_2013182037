@@ -43,34 +43,10 @@ void Idle(void)
 
 void MouseInput(int button, int state, int x, int y)
 {
-	/*
+	
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-		g_Object_rectAngle->setRectPosition_X(x - 250);
-		g_Object_rectAngle->setRectPosition_Y(y - 300); // 수정 필요
-		
-					// 새 오브젝트 생성
-			++rectCount;
-		g_Object_rectAngleS[rectCount] = new Object();
-		g_Object_rectAngleS[rectCount]->setRectInfo(0, 0, 0, 10, 1.0f, 0.0f, 1.0f, 1.0f);
-		g_Object_rectAngleS[rectCount]->setRectVelocity(2, 3);
-		
+		g_SceneMgr->BuildObjects(x - 250, 250 - y);
 	}
-	if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
-		
-			
-	}
-	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
-		if (rectCount >= 0) {
-			delete g_Object_rectAngleS[rectCount];
-			--rectCount;
-			
-		}
-		
-	}
-	if (button == GLUT_RIGHT_BUTTON && state == GLUT_UP) {
-		
-			
-	}*/
 	RenderScene();
 }
 
@@ -107,7 +83,6 @@ int main(int argc, char **argv)
 	g_SceneMgr = new SceneMgr();
 	g_prevTime = timeGetTime();
 	cout << "\nScene Manager Loaded" << endl;
-	g_SceneMgr->BuildObjects();
 
 	//-------------------------------
 	glutDisplayFunc(RenderScene);
