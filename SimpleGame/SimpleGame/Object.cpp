@@ -11,7 +11,8 @@ Object::~Object()
 {
 }
 
-void Object::setObjectInfo(int x, int y, int z, int size, float r, float g, float b, float a) {
+// 오브젝트 정보 setting
+void Object::setObjectInfo(float x, float y, float z, float size, float r, float g, float b, float a) {
 	m_objectPosition2D.x = x;
 	m_objectPosition2D.y = y;
 	m_objectPosition_Z = z;
@@ -22,26 +23,29 @@ void Object::setObjectInfo(int x, int y, int z, int size, float r, float g, floa
 	m_objectColor_A = a;
 }
 
-void Object::Move(int time) {
-	m_objectPosition2D.x += m_objectVelocity.x * time;
-	m_objectPosition2D.y += m_objectVelocity.y * time;
+// 오브젝트 움직임
+void Object::Move(DWORD time) {
+	m_objectPosition2D.x += m_objectVelocity.x * time / 4.0f;
+	m_objectPosition2D.y += m_objectVelocity.y * time / 4.0f;
 }
 
-
+// 오브젝트 충돌체 getting
 Collider Object::getObjectCollider() { 
-	m_objectCollider.minX = m_objectPosition2D.x - m_objectSize / 2;
-	m_objectCollider.minY = m_objectPosition2D.y - m_objectSize / 2;
-	m_objectCollider.maxX = m_objectPosition2D.x + m_objectSize / 2;
-	m_objectCollider.maxY = m_objectPosition2D.y + m_objectSize / 2;
+	m_objectCollider.minX = m_objectPosition2D.x - m_objectSize / 2.0f;
+	m_objectCollider.minY = m_objectPosition2D.y - m_objectSize / 2.0f;
+	m_objectCollider.maxX = m_objectPosition2D.x + m_objectSize / 2.0f;
+	m_objectCollider.maxY = m_objectPosition2D.y + m_objectSize / 2.0f;
 	return m_objectCollider;
 }
 
+// 벽 충돌검사
 void Object::WallCollision() {
-	if (m_objectPosition2D.x + m_objectSize / 2 >= 250 || m_objectPosition2D.x - m_objectSize / 2 <= -250) m_objectVelocity.x = -m_objectVelocity.x;
-	if (m_objectPosition2D.y + m_objectSize / 2 >= 250 || m_objectPosition2D.y - m_objectSize / 2 <= -250) m_objectVelocity.y = -m_objectVelocity.y;
+	if (m_objectPosition2D.x + m_objectSize / 2.0f > 250.0f || m_objectPosition2D.x - m_objectSize / 2.0f < -250.0f) m_objectVelocity.x = -m_objectVelocity.x;
+	if (m_objectPosition2D.y + m_objectSize / 2.0f > 250.0f || m_objectPosition2D.y - m_objectSize / 2.0f < -250.0f) m_objectVelocity.y = -m_objectVelocity.y;
 }
 
-void Object::update() {
-	Move(1);
+// 업데이트 함수
+void Object::update(DWORD elapsedTime) {
+	Move(elapsedTime);
 	WallCollision();
 }

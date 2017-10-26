@@ -1,46 +1,49 @@
 #pragma once
-
+#include <Windows.h>
 
 struct Vector2D {
-	int x;
-	int y;
+	float x;
+	float y;
 };
 
 struct Collider {
-	int minX;
-	int minY;
-	int maxX;
-	int maxY;
+	float minX;
+	float minY;
+	float maxX;
+	float maxY;
 };
 
 class Object
 {
 private:
 	Vector2D m_objectPosition2D;
-	int m_objectPosition_Z;
-	int m_objectSize;
+	float m_objectPosition_Z;
+	float m_objectSize;
 	float m_objectColor_R, m_objectColor_G, m_objectColor_B, m_objectColor_A; // 색상
 	Vector2D m_objectVelocity; // 속도벡터
 	Collider m_objectCollider;
+
+	float m_objectLife = 10.0f;
+	bool m_objectIsDead = false;
 
 public:
 	Object();
 	~Object();
 
 	// setRectAngle
-	void setObjectInfo(int x, int y, int z, int size, float r, float g, float b, float a);
+	void setObjectInfo(float x, float y, float z, float size, float r, float g, float b, float a);
 
 	// position
-	int getObjectPosition_X() { return m_objectPosition2D.x; };
-	void setObjectPosition_X(int x) { m_objectPosition2D.x = x; };
-	int getObjectPosition_Y() { return m_objectPosition2D.y; };
-	void setObjectPosition_Y(int y) { m_objectPosition2D.y = y; };
-	int getObjectPosition_Z() { return m_objectPosition_Z; };
-	void setObjectPosition_Z(int z) { m_objectPosition_Z = z; };
+	float getObjectPosition_X() { return m_objectPosition2D.x; };
+	void setObjectPosition_X(float x) { m_objectPosition2D.x = x; };
+	float getObjectPosition_Y() { return m_objectPosition2D.y; };
+	void setObjectPosition_Y(float y) { m_objectPosition2D.y = y; };
+	float getObjectPosition_Z() { return m_objectPosition_Z; };
+	void setObjectPosition_Z(float z) { m_objectPosition_Z = z; };
 
 	// size
-	int getObjectSize() { return m_objectSize; };
-	void setObjectSize(int size) { m_objectSize = size; };
+	float getObjectSize() { return m_objectSize; };
+	void setObjectSize(float size) { m_objectSize = size; };
 
 	// color
 	float getObjectColor_R() { return m_objectColor_R; };
@@ -54,15 +57,18 @@ public:
 
 	// Velocity
 	Vector2D getObjectVelocity() { return m_objectVelocity; };
-	void setObjectVelocityX(int x) { if (x > 10) x = 10; m_objectVelocity.x = x; };
-	void setObjectVelocityY(int y) { if (y > 10) y = 10; m_objectVelocity.y = y; };
-	void Move(int time);
+	void setObjectVelocityX(float x) { if (x > 10.0f) x = 10.0f; m_objectVelocity.x = x; };
+	void setObjectVelocityY(float y) { if (y > 10.0f) y = 10.0f; m_objectVelocity.y = y; };
+	void Move(DWORD elapsedTime);
 
 	// Collision
 	Collider getObjectCollider();
 	void WallCollision();
+	void setObjcetLife(float l) { m_objectLife += l; if (m_objectLife <= 0.0f) m_objectIsDead = true; };
+	float getObjectLife() { return m_objectLife; };
+	bool getObjectIsDead() { return m_objectIsDead; };
 
 	// update()
-	void update();
+	void update(DWORD elapsedTime);
 };
 

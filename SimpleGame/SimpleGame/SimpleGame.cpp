@@ -13,12 +13,11 @@ but WITHOUT ANY WARRANTY.
 #include "Dependencies\glew.h"
 #include "Dependencies\freeglut.h"
 
-#include "Renderer.h"
-#include "Object.h"
 #include "SceneMgr.h"
 
 using namespace std;
 
+DWORD g_prevTime = 0;
 SceneMgr* g_SceneMgr = NULL;
 
 void RenderScene(void)
@@ -27,7 +26,11 @@ void RenderScene(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-	g_SceneMgr->UpdateObjects();
+	DWORD currTime = timeGetTime();
+	DWORD elapsedTime = currTime - g_prevTime;
+	g_prevTime = currTime;
+
+	g_SceneMgr->UpdateObjects(elapsedTime);
 	g_SceneMgr->DrawObjects();
 
 	glutSwapBuffers();
@@ -40,6 +43,34 @@ void Idle(void)
 
 void MouseInput(int button, int state, int x, int y)
 {
+	/*
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+		g_Object_rectAngle->setRectPosition_X(x - 250);
+		g_Object_rectAngle->setRectPosition_Y(y - 300); // 수정 필요
+		
+					// 새 오브젝트 생성
+			++rectCount;
+		g_Object_rectAngleS[rectCount] = new Object();
+		g_Object_rectAngleS[rectCount]->setRectInfo(0, 0, 0, 10, 1.0f, 0.0f, 1.0f, 1.0f);
+		g_Object_rectAngleS[rectCount]->setRectVelocity(2, 3);
+		
+	}
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
+		
+			
+	}
+	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
+		if (rectCount >= 0) {
+			delete g_Object_rectAngleS[rectCount];
+			--rectCount;
+			
+		}
+		
+	}
+	if (button == GLUT_RIGHT_BUTTON && state == GLUT_UP) {
+		
+			
+	}*/
 	RenderScene();
 }
 
@@ -74,6 +105,7 @@ int main(int argc, char **argv)
 
 	// Initialize SceneMgr
 	g_SceneMgr = new SceneMgr();
+	g_prevTime = timeGetTime();
 	cout << "\nScene Manager Loaded" << endl;
 	g_SceneMgr->BuildObjects();
 

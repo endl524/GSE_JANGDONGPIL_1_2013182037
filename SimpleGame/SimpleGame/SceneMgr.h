@@ -1,6 +1,9 @@
 #pragma once
 #include "Object.h"
 #include "Renderer.h"
+#include <vector>
+#include <Windows.h>
+#include <mmsystem.h>
 
 #define MAX_OBJECTS_COUNT 50;
 
@@ -24,6 +27,8 @@ public:
 	void BuildObjects();
 	void DrawObjects();
 	void ObjectsCollisionCheck();
-	void UpdateObjects();
+	void UpdateObjects(DWORD elapsedTime);
+	void CheckDeadObject();
+
 	void DestroyObjects();
 };
