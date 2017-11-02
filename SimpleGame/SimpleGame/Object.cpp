@@ -26,8 +26,8 @@ void Object::setObjectInfo(float x, float y, float z, float size, float r, float
 // 오브젝트 움직임
 void Object::Move(DWORD time) {
 	float elapsedTime = time / 1000.f;
-	m_objectPosition2D.x += m_objectVelocity.x * elapsedTime;
-	m_objectPosition2D.y += m_objectVelocity.y * elapsedTime;
+	m_objectPosition2D.x += m_objectVelocity.x * elapsedTime * m_objectSpeed;
+	m_objectPosition2D.y += m_objectVelocity.y * elapsedTime * m_objectSpeed;
 }
 
 // 오브젝트 충돌체 getting

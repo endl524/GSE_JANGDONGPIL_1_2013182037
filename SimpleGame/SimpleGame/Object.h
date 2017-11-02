@@ -23,8 +23,11 @@ private:
 	Vector2D m_objectVelocity; // ¼Óµµº¤ÅÍ
 	Collider m_objectCollider;
 
-	float m_objectLife = 50.0f;
+	float m_objectSpeed;
+
+	float m_objectLife;
 	bool m_objectIsDead = false;
+
 
 public:
 	Object();
@@ -57,16 +60,24 @@ public:
 
 	// Velocity
 	Vector2D getObjectVelocity() { return m_objectVelocity; };
-	void setObjectVelocityX(float x) { if (x > 10.0f) x = 10.0f; m_objectVelocity.x = x; };
-	void setObjectVelocityY(float y) { if (y > 10.0f) y = 10.0f; m_objectVelocity.y = y; };
+	void setObjectVelocityX(float x) { m_objectVelocity.x = x; };
+	void setObjectVelocityY(float y) { m_objectVelocity.y = y; };
 	void Move(DWORD elapsedTime);
+	void setObjectSpeed(float s) { m_objectSpeed = s; };
+	float getObjectSpeed() { return m_objectSpeed; };
 
 	// Collision
 	Collider getObjectCollider();
 	void WallCollision();
-	void setObjcetLife(float l) { m_objectLife += l; if (m_objectLife <= 0.0f) m_objectIsDead = true; };
+
+	void damageObjcetLife(float l) { m_objectLife += l; if (m_objectLife <= 0.0f) m_objectIsDead = true; };
+
+	void setObjcetLife(float l) { m_objectLife = l;};
 	float getObjectLife() { return m_objectLife; };
 	bool getObjectIsDead() { return m_objectIsDead; };
+
+
+
 
 	// update()
 	void update(DWORD elapsedTime);

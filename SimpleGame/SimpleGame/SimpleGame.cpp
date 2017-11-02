@@ -17,8 +17,10 @@ but WITHOUT ANY WARRANTY.
 
 using namespace std;
 
+
 DWORD g_prevTime = 0;
 SceneMgr* g_SceneMgr = NULL;
+DWORD plustime = 0;
 
 void RenderScene(void)
 {
@@ -28,6 +30,12 @@ void RenderScene(void)
 
 	DWORD currTime = timeGetTime();
 	DWORD elapsedTime = currTime - g_prevTime;
+	plustime += elapsedTime;
+	if (plustime >= 500) {
+		g_SceneMgr->BuildObjects(0.0f, 0.0f, OBJECT_BULLET);
+		plustime = 0;
+	}
+
 	g_prevTime = currTime;
 
 	g_SceneMgr->UpdateObjects(elapsedTime);
@@ -45,7 +53,7 @@ void MouseInput(int button, int state, int x, int y)
 {
 	
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-		g_SceneMgr->BuildObjects(x - 250, 250 - y);
+		g_SceneMgr->BuildObjects(x - 250, 250 - y, OBJECT_CHARACTER);
 	}
 	RenderScene();
 }
@@ -57,6 +65,7 @@ void KeyInput(unsigned char key, int x, int y)
 
 void SpecialKeyInput(int key, int x, int y)
 {
+	
 	RenderScene();
 }
 
@@ -83,6 +92,7 @@ int main(int argc, char **argv)
 	g_SceneMgr = new SceneMgr();
 	g_prevTime = timeGetTime();
 	cout << "\nScene Manager Loaded" << endl;
+	g_SceneMgr->BuildObjects(0.0f,0.0f,OBJECT_BUILDING);
 
 	//-------------------------------
 	glutDisplayFunc(RenderScene);
