@@ -62,7 +62,7 @@ void SceneMgr::BuildObjects(float x, float y, int type) {
 		if (m_curBulletCount < MAX_BULLETS_COUNT - 1) {
 			++m_curBulletCount;
 			m_p_Object_Bullets[m_curBulletCount] = new Object();
-			m_p_Object_Bullets[m_curBulletCount]->setObjectInfo(m_p_Object_Building->getObjectPosition_X(), m_p_Object_Building->getObjectPosition_Y(), 0.0f, 10.0f, 1.0f, 0.0f, 1.0f, 1.0f);
+			m_p_Object_Bullets[m_curBulletCount]->setObjectInfo(m_p_Object_Building->getObjectPosition_X(), m_p_Object_Building->getObjectPosition_Y(), 0.0f, 2.0f, 1.0f, 0.0f, 1.0f, 1.0f);
 			m_p_Object_Bullets[m_curBulletCount]->setObjectVelocityX(ui_randomVelocityX(dre));
 			m_p_Object_Bullets[m_curBulletCount]->setObjectVelocityY(ui_randomVelocityY(dre));
 			if (m_p_Object_Bullets[m_curBulletCount]->getObjectVelocity().x == 0.0f && m_p_Object_Bullets[m_curBulletCount]->getObjectVelocity().y == 0.0f) {
@@ -78,12 +78,6 @@ void SceneMgr::BuildObjects(float x, float y, int type) {
 
 
 void SceneMgr::DrawObjects() {
-	if (m_p_Object_Building != nullptr) {
-		m_p_Renderer->DrawSolidRect(
-			m_p_Object_Building->getObjectPosition_X(), m_p_Object_Building->getObjectPosition_Y(), m_p_Object_Building->getObjectPosition_Z(),
-			m_p_Object_Building->getObjectSize(),
-			m_p_Object_Building->getObjectColor_R(), m_p_Object_Building->getObjectColor_G(), m_p_Object_Building->getObjectColor_B(), m_p_Object_Building->getObjectColor_A());
-	}
 	for (int i = 0; i <= m_curObjectCount; ++i) {
 		m_p_Renderer->DrawSolidRect(
 			m_p_Object_RectAngleS[i]->getObjectPosition_X(), m_p_Object_RectAngleS[i]->getObjectPosition_Y(), m_p_Object_RectAngleS[i]->getObjectPosition_Z(),
@@ -95,6 +89,12 @@ void SceneMgr::DrawObjects() {
 			m_p_Object_Bullets[i]->getObjectPosition_X(), m_p_Object_Bullets[i]->getObjectPosition_Y(), m_p_Object_Bullets[i]->getObjectPosition_Z(),
 			m_p_Object_Bullets[i]->getObjectSize(),
 			m_p_Object_Bullets[i]->getObjectColor_R(), m_p_Object_Bullets[i]->getObjectColor_G(), m_p_Object_Bullets[i]->getObjectColor_B(), m_p_Object_Bullets[i]->getObjectColor_A());
+	}
+	if (m_p_Object_Building != nullptr) {
+		m_p_Renderer->DrawSolidRect(
+			m_p_Object_Building->getObjectPosition_X(), m_p_Object_Building->getObjectPosition_Y(), m_p_Object_Building->getObjectPosition_Z(),
+			m_p_Object_Building->getObjectSize(),
+			m_p_Object_Building->getObjectColor_R(), m_p_Object_Building->getObjectColor_G(), m_p_Object_Building->getObjectColor_B(), m_p_Object_Building->getObjectColor_A());
 	}
 }
 
