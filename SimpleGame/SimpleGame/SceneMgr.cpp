@@ -69,7 +69,7 @@ void SceneMgr::BuildObjects(float x, float y, int type) {
 				m_p_Object_Bullets[m_curBulletCount]->setObjectVelocityX(1.0f);
 				m_p_Object_Bullets[m_curBulletCount]->setObjectVelocityY(1.0f);
 			}
-			m_p_Object_Bullets[m_curBulletCount]->setObjcetLife(10.0f);
+			m_p_Object_Bullets[m_curBulletCount]->setObjcetLife(20.0f);
 			m_p_Object_Bullets[m_curBulletCount]->setObjectSpeed(300.0f);
 		}
 		break;
