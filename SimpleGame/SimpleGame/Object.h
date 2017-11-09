@@ -1,5 +1,5 @@
 #pragma once
-#include <Windows.h>
+#include "stdafx.h"
 
 struct Vector2D {
 	float x;
@@ -29,6 +29,8 @@ private:
 	bool m_objectIsDead = false;
 
 	float m_objectCoolTime = 0.0f;
+
+	int m_objectID;
 
 public:
 	Object();
@@ -63,7 +65,7 @@ public:
 	Vector2D getObjectVelocity() { return m_objectVelocity; };
 	void setObjectVelocityX(float x) { m_objectVelocity.x = x; };
 	void setObjectVelocityY(float y) { m_objectVelocity.y = y; };
-	void Move(DWORD elapsedTime);
+	void Move(float elapsedTime);
 	void setObjectSpeed(float s) { m_objectSpeed = s; };
 	float getObjectSpeed() { return m_objectSpeed; };
 
@@ -83,10 +85,13 @@ public:
 	void plusObjectCoolTime(float ct) { m_objectCoolTime += ct; };
 	float getObjectCoolTime() { return m_objectCoolTime; };
 
-	
+
+	// ID
+	void setObjectID(int id) { m_objectID = id; };
+	int getObjectID() { return m_objectID; };
 
 
 	// update()
-	void update(DWORD elapsedTime);
+	void update(float elapsedTime);
 };
 

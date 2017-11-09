@@ -9,26 +9,24 @@ but WITHOUT ANY WARRANTY.
 */
 
 #include "stdafx.h"
-#include <iostream>
 #include "Dependencies\glew.h"
 #include "Dependencies\freeglut.h"
 
 #include "SceneMgr.h"
 
-using namespace std;
-
 
 DWORD g_prevTime = 0;
+DWORD currTime = 0;
+DWORD elapsedTime = 0;
 SceneMgr* g_SceneMgr = NULL;
 
 void RenderScene(void)
 {
-	// background setting
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
-	DWORD currTime = timeGetTime();
-	DWORD elapsedTime = currTime - g_prevTime;
+	currTime = timeGetTime();
+	elapsedTime = currTime - g_prevTime;
 
 	g_SceneMgr->setElapsedTime(elapsedTime);
 	g_SceneMgr->UpdateObjects(elapsedTime);
@@ -46,9 +44,10 @@ void Idle(void)
 
 void MouseInput(int button, int state, int x, int y)
 {
-	
-	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-		g_SceneMgr->BuildObjects(x - 250, 250 - y, OBJECT_CHARACTER);
+	// 클릭 시 해당 위치에 캐릭터 생성
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+	{
+		g_SceneMgr->BuildObjects(x - 250, 250 - y, 0, OBJECT_CHARACTER);
 	}
 	RenderScene();
 }
@@ -88,7 +87,8 @@ int main(int argc, char **argv)
 	g_prevTime = timeGetTime();
 	cout << "\nScene Manager Loaded" << endl;
 
-	g_SceneMgr->BuildObjects(0.0f, 0.0f, OBJECT_BUILDING);
+	// default 건물 생성
+	g_SceneMgr->BuildObjects(0.0f, 0.0f, 0, OBJECT_BUILDING);
 
 	//-------------------------------
 	glutDisplayFunc(RenderScene);
@@ -100,7 +100,6 @@ int main(int argc, char **argv)
 
 	glutMainLoop();
 
-	g_SceneMgr->DestroyObjects();
 	cout << "\nScene Manager deleted" << endl;
 	delete g_SceneMgr;
 

@@ -1,9 +1,8 @@
 #pragma once
+#include "stdafx.h"
 #include "Object.h"
 #include "Renderer.h"
-#include <vector>
-#include <Windows.h>
-#include <mmsystem.h>
+
 
 #define MAX_OBJECTS_COUNT 10
 #define MAX_BULLETS_COUNT 100
@@ -36,17 +35,10 @@ public:
 	SceneMgr();
 	~SceneMgr();
 
-	int getMaxObjectCount() { return MAX_OBJECTS_COUNT; };
-	Object** getObject() { return m_p_Object_RectAngleS; };
-	Object** getObject_Arrows() { return m_p_Object_Arrows; };
-
-	int getCurBulletCount() { return m_curBulletCount; };
-	bool IsBullet() { if (m_p_Object_Bullets != NULL) return true; };
-
-	void BuildObjects(float x, float y, int type);
+	void BuildObjects(float x, float y, int id, int type);
 	void DrawObjects();
 	void ObjectsCollisionCheck();
-	void UpdateObjects(DWORD elapsedTime);
+	void UpdateObjects(float elapsedTime);
 	void CheckDeadObject();
 
 
