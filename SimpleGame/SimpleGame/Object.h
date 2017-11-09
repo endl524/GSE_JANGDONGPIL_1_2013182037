@@ -28,6 +28,7 @@ private:
 	float m_objectLife;
 	bool m_objectIsDead = false;
 
+	float m_objectCoolTime = 0.0f;
 
 public:
 	Object();
@@ -77,6 +78,12 @@ public:
 	bool getObjectIsDead() { return m_objectIsDead; };
 
 
+	// CoolTime
+	void setObjectCoolTime(float ct) { m_objectCoolTime = ct; };
+	void plusObjectCoolTime(float ct) { m_objectCoolTime += ct; };
+	float getObjectCoolTime() { return m_objectCoolTime; };
+
+	
 
 
 	// update()
