@@ -42,8 +42,8 @@ Collider Object::getObjectCollider() {
 // 벽 충돌검사
 void Object::WallCollision() {
 	getObjectCollider();
-	if (m_objectCollider.maxX > 250.0f || m_objectCollider.minX < -250.0f) m_objectVelocity.x = -m_objectVelocity.x;
-	if (m_objectCollider.maxY > 250.0f || m_objectCollider.minY < -250.0f) m_objectVelocity.y = -m_objectVelocity.y;
+	if (m_objectCollider.maxX > WINDOWSIZE_WIDTH/2 || m_objectCollider.minX < -WINDOWSIZE_WIDTH/2) m_objectVelocity.x = -m_objectVelocity.x;
+	if (m_objectCollider.maxY > WINDOWSIZE_HEIGHT/2 || m_objectCollider.minY < -WINDOWSIZE_HEIGHT/2) m_objectVelocity.y = -m_objectVelocity.y;
 }
 
 // 업데이트 함수

@@ -47,7 +47,7 @@ void MouseInput(int button, int state, int x, int y)
 	// 클릭 시 해당 위치에 캐릭터 생성
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
-		g_SceneMgr->BuildObjects(x - 250, 250 - y, 0, OBJECT_CHARACTER);
+		g_SceneMgr->BuildObjects(x - WINDOWSIZE_WIDTH/2, WINDOWSIZE_HEIGHT/2 - y, OBJECT_TEAM_2, OBJECT_CHARACTER);
 	}
 	RenderScene();
 }
@@ -69,7 +69,7 @@ int main(int argc, char **argv)
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(0, 0);
-	glutInitWindowSize(500, 500);
+	glutInitWindowSize(WINDOWSIZE_WIDTH, WINDOWSIZE_HEIGHT);
 	glutCreateWindow("Game Software Engineering KPU");
 
 	glewInit();
@@ -88,7 +88,8 @@ int main(int argc, char **argv)
 	cout << "\nScene Manager Loaded" << endl;
 
 	// default 건물 생성
-	g_SceneMgr->BuildObjects(0.0f, 0.0f, 0, OBJECT_BUILDING);
+	g_SceneMgr->BuildObjects(-150.0f, 300.0f, OBJECT_TEAM_1, OBJECT_BUILDING);
+	g_SceneMgr->BuildObjects(-150.0f, -300.0f, OBJECT_TEAM_2, OBJECT_BUILDING);
 
 	//-------------------------------
 	glutDisplayFunc(RenderScene);

@@ -1,5 +1,6 @@
 #pragma once
 #include "stdafx.h"
+#include "Renderer.h"
 
 struct Vector2D {
 	float x;
@@ -31,6 +32,8 @@ private:
 	float m_objectCoolTime = 0.0f;
 
 	int m_objectID;
+
+	GLuint m_textureID;
 
 public:
 	Object();
@@ -71,6 +74,11 @@ public:
 
 	// Collision
 	Collider getObjectCollider();
+	bool IsCollide(Collider other) {
+		if (getObjectCollider().minX <= other.maxX	&&	getObjectCollider().maxX >= other.minX	&&	getObjectCollider().minY <= other.maxY	&&	getObjectCollider().maxY >= other.minY)
+			return true;
+		else return false;
+	}
 	void WallCollision();
 
 	void damageObjcetLife(float l) { m_objectLife += l; if (m_objectLife <= 0.0f) m_objectIsDead = true; };
@@ -90,6 +98,10 @@ public:
 	void setObjectID(int id) { m_objectID = id; };
 	int getObjectID() { return m_objectID; };
 
+
+	// Texture
+	void setTextureID(int id) { m_textureID = id; };
+	int getTextureID() { return m_textureID; };
 
 	// update()
 	void update(float elapsedTime);
