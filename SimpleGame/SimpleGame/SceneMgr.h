@@ -3,13 +3,6 @@
 #include "Object.h"
 #include "Renderer.h"
 
-#define MAX_T1_CHAR_COUNT 10
-#define MAX_T2_CHAR_COUNT 10
-#define MAX_BULLETS_COUNT 100
-#define MAX_ARROWS_COUNT 100
-#define MAX_T1_BUILDING_COUNT 3
-#define MAX_T2_BUILDING_COUNT 3
-
 #define OBJECT_BUILDING 0
 #define OBJECT_CHARACTER 1
 #define OBJECT_BULLET 2
@@ -17,30 +10,40 @@
 #define OBJECT_TEAM_1 4
 #define OBJECT_TEAM_2 5
 
+#define MAX_BULLET_COUNT 100
+#define MAX_ARROW_COUNT 100
+#define MAX_CHARACTER_COUNT 10
+
 class SceneMgr
 {
 private:
-	int m_curT1CharCount = -1;
-	int m_curT2CharCount = -1;
-	int m_curT1BuildingCount = -1;
-	int m_curT2BuildingCount = -1;
-	int m_curBulletCount = -1;
-	int m_curArrowCount = -1;
 
-	
-	Object* m_p_Object_Bullets[MAX_BULLETS_COUNT];
-	Object* m_p_Object_T1_Building[MAX_T1_BUILDING_COUNT];
-	Object* m_p_Object_T2_Building[MAX_T2_BUILDING_COUNT];
+	int m_curBulletCount = 0;
+	int m_curArrowCount = 0;
+	int m_curT1CharCount = 0;
+	int m_curT2CharCount = 0;
 
-	Object* m_p_Object_Arrows[MAX_ARROWS_COUNT];
-	Object* m_p_Object_T1_Char[MAX_T1_CHAR_COUNT];
-	Object* m_p_Object_T2_Char[MAX_T2_CHAR_COUNT];
+	Object* m_p_Object_Bullets;
+	list<Object> m_BulletObj_List;
+	list<Object>::iterator m_iter_bullet;
+
+	Object* m_p_Object_Building;
+	list<Object> m_BuildingObj_List;
+	list<Object>::iterator m_iter_building;
+
+	Object* m_p_Object_Arrows;
+	list<Object> m_ArrowObj_List;
+	list<Object>::iterator m_iter_arrow;
+
+	Object* m_p_Object_Char;
+	list<Object> m_CharObj_List;
+	list<Object>::iterator m_iter_char;
 
 	Renderer* m_p_Renderer;
 	
 	
 
-	float elapsedTime;
+	float m_time = 5.0f;
 	
 public:
 	SceneMgr();
@@ -53,8 +56,9 @@ public:
 	void CheckDeadObject();
 
 
-	void setElapsedTime(float t) { elapsedTime = t; };
-	float getElapsedTime() { return elapsedTime; };
+	void setElapsedTime(float t) { m_time = t; };
+	void plusElapsedTime(float t) { m_time += t; };
+	float getElapsedTime() { return m_time; };
 
 	void DestroyObjects();
 };

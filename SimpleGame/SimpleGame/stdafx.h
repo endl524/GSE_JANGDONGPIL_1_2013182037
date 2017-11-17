@@ -6,7 +6,7 @@
 #include <tchar.h>
 
 #include <iostream>
-#include <vector>
+#include <list>
 #include <Windows.h>
 #include <mmsystem.h>
 #include <random>

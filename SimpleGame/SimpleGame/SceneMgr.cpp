@@ -4,32 +4,17 @@
 // 랜덤엔진
 random_device randomDevice;
 default_random_engine dre(randomDevice());
-uniform_int_distribution<> ui_randomVelocityX(-1.0f, 1.0f);
-uniform_int_distribution<> ui_randomVelocityY(-1.0f, 1.0f);
+uniform_real_distribution<> ur_randomVelocityX(-1.0f, 1.0f);
+uniform_real_distribution<> ur_randomT1VelocityY(-1.0f, 0.0f);
+uniform_real_distribution<> ur_randomT2VelocityY(0.0f, 1.0f);
 
+uniform_real_distribution<> ur_randomPosX(-WINDOWSIZE_WIDTH / 2.0f + 10.0f, WINDOWSIZE_WIDTH / 2.0f - 10.0f);
+uniform_real_distribution<> ur_randomPosY(0.0f, WINDOWSIZE_HEIGHT / 2.0f - 10.0f);
 
 // 렌더러와 오브젝트들 생성
 SceneMgr::SceneMgr()
 {
 	m_p_Renderer = new Renderer(WINDOWSIZE_WIDTH, WINDOWSIZE_HEIGHT);
-
-	for (int i = 0; i < MAX_T1_BUILDING_COUNT; ++i)
-		m_p_Object_T1_Building[i] = NULL;
-
-	for (int i = 0; i < MAX_T2_BUILDING_COUNT; ++i)
-		m_p_Object_T2_Building[i] = NULL;
-
-	for (int i = 0; i < MAX_T1_CHAR_COUNT; ++i)
-		m_p_Object_T1_Char[i] = NULL;
-
-	for (int i = 0; i < MAX_T2_CHAR_COUNT; ++i)
-		m_p_Object_T2_Char[i] = NULL;
-
-	for (int i = 0; i < MAX_BULLETS_COUNT; ++i)
-		m_p_Object_Bullets[i] = NULL;
-
-	for (int i = 0; i < MAX_ARROWS_COUNT; ++i)
-		m_p_Object_Arrows[i] = NULL;
 }
 
 
@@ -44,112 +29,109 @@ void SceneMgr::BuildObjects(float x, float y, int id, int type)
 	switch (type)
 	{
 	case OBJECT_BUILDING:
-		if (id == OBJECT_TEAM_1)
+		for (int i = 0; i < 3; ++i)
 		{
-			for (int i = 0; i < MAX_T1_BUILDING_COUNT; ++i)
-			{
-				++m_curT1BuildingCount;
-				m_p_Object_T1_Building[i] = new Object();
-				m_p_Object_T1_Building[i]->setObjectInfo(x + i * 150.0f, y, 0.0f, 50.0f, 1.0f, 1.0f, 0.0f, 1.0f);
-				m_p_Object_T1_Building[i]->setObjectVelocityX(0);
-				m_p_Object_T1_Building[i]->setObjectVelocityY(0);
-				m_p_Object_T1_Building[i]->setObjcetLife(500.0f);
-				m_p_Object_T1_Building[i]->setObjectSpeed(0.0f);
-				m_p_Object_T1_Building[i]->setObjectID(OBJECT_TEAM_1);
-				m_p_Object_T1_Building[i]->setTextureID(m_p_Renderer->CreatePngTexture("./Resource/Pig.png"));
-			}
-		}
+			m_p_Object_Building = new Object();
+			m_p_Object_Building->setObjectInfo(x + i * 150.0f, y, 0.0f, 100.0f, 1.0f, 1.0f, 0.0f, 1.0f);
+			m_p_Object_Building->setObjectVelocityX(0);
+			m_p_Object_Building->setObjectVelocityY(0);
+			m_p_Object_Building->setObjcetLife(500.0f);
+			m_p_Object_Building->setObjectSpeed(0.0f);
+			m_p_Object_Building->setObjectID(id);
+			if (id == OBJECT_TEAM_1)
+				m_p_Object_Building->setTextureID(m_p_Renderer->CreatePngTexture("./Resource/Pig.png"));
+			else if (id == OBJECT_TEAM_2)
+				m_p_Object_Building->setTextureID(m_p_Renderer->CreatePngTexture("./Resource/AngryBird.png"));
 
-		else if (id == OBJECT_TEAM_2)
-		{
-			for (int i = 0; i < MAX_T2_BUILDING_COUNT; ++i)
-			{
-				++m_curT2BuildingCount;
-				m_p_Object_T2_Building[i] = new Object();
-				m_p_Object_T2_Building[i]->setObjectInfo(x + i * 150.0f, y, 0.0f, 50.0f, 1.0f, 1.0f, 0.0f, 1.0f);
-				m_p_Object_T2_Building[i]->setObjectVelocityX(0);
-				m_p_Object_T2_Building[i]->setObjectVelocityY(0);
-				m_p_Object_T2_Building[i]->setObjcetLife(500.0f);
-				m_p_Object_T2_Building[i]->setObjectSpeed(0.0f);
-				m_p_Object_T2_Building[i]->setObjectID(OBJECT_TEAM_2);
-				m_p_Object_T2_Building[i]->setTextureID(m_p_Renderer->CreatePngTexture("./Resource/AngryBird.png"));
-			}
+			m_BuildingObj_List.push_back(*m_p_Object_Building);
 		}
 
 		break;
 
 	case OBJECT_CHARACTER:
-		if (id == OBJECT_TEAM_1)
+		if (id == OBJECT_TEAM_1 && m_curT1CharCount < MAX_CHARACTER_COUNT)
 		{
-			if (m_curT1CharCount < MAX_T1_CHAR_COUNT - 1)
-			{
-				++m_curT1CharCount;
-				m_p_Object_T1_Char[m_curT1CharCount] = new Object();
-				m_p_Object_T1_Char[m_curT1CharCount]->setObjectInfo(x, y, 0.0f, 10.0f, 1.0f, 0.0f, 0.0f, 1.0f);
-				m_p_Object_T1_Char[m_curT1CharCount]->setObjectVelocityX(ui_randomVelocityX(dre));
-				m_p_Object_T1_Char[m_curT1CharCount]->setObjectVelocityY(ui_randomVelocityY(dre));
-				if (m_p_Object_T1_Char[m_curT1CharCount]->getObjectVelocity().x == 0.0f && m_p_Object_T1_Char[m_curT1CharCount]->getObjectVelocity().y == 0.0f) {
-					m_p_Object_T1_Char[m_curT1CharCount]->setObjectVelocityX(1.0f);
-					m_p_Object_T1_Char[m_curT1CharCount]->setObjectVelocityY(1.0f);
-				}
-				m_p_Object_T1_Char[m_curT1CharCount]->setObjcetLife(10.0f);
-				m_p_Object_T1_Char[m_curT1CharCount]->setObjectSpeed(150.0f);
-				m_p_Object_T1_Char[m_curT1CharCount]->setObjectID(OBJECT_TEAM_1);
+			++m_curT1CharCount;
+			m_p_Object_Char = new Object();
+			m_p_Object_Char->setObjectInfo(x, y, 0.0f, 10.0f, 1.0f, 0.0f, 0.0f, 1.0f);
+			m_p_Object_Char->setObjectVelocityX(ur_randomVelocityX(dre));
+			m_p_Object_Char->setObjectVelocityY(ur_randomT1VelocityY(dre));
+			if (m_p_Object_Char->getObjectVelocity().x == 0.0f && m_p_Object_Char->getObjectVelocity().y == 0.0f) {
+				m_p_Object_Char->setObjectVelocityX(ur_randomVelocityX(dre));
+				m_p_Object_Char->setObjectVelocityY(-1.0f);
 			}
+			m_p_Object_Char->setObjcetLife(10.0f);
+			m_p_Object_Char->setObjectSpeed(300.0f);
+			m_p_Object_Char->setObjectID(id);
+
+			m_CharObj_List.push_back(*m_p_Object_Char);
 		}
 
-		else if (id == OBJECT_TEAM_2)
+		else if (id == OBJECT_TEAM_2 && m_curT2CharCount < MAX_CHARACTER_COUNT)
 		{
-			if (m_curT2CharCount < MAX_T2_CHAR_COUNT - 1)
-			{
-				++m_curT2CharCount;
-				m_p_Object_T2_Char[m_curT2CharCount] = new Object();
-				m_p_Object_T2_Char[m_curT2CharCount]->setObjectInfo(x, y, 0.0f, 10.0f, 0.0f, 0.0f, 1.0f, 1.0f);
-				m_p_Object_T2_Char[m_curT2CharCount]->setObjectVelocityX(ui_randomVelocityX(dre));
-				m_p_Object_T2_Char[m_curT2CharCount]->setObjectVelocityY(ui_randomVelocityY(dre));
-				if (m_p_Object_T2_Char[m_curT2CharCount]->getObjectVelocity().x == 0.0f && m_p_Object_T2_Char[m_curT2CharCount]->getObjectVelocity().y == 0.0f) {
-					m_p_Object_T2_Char[m_curT2CharCount]->setObjectVelocityX(1.0f);
-					m_p_Object_T2_Char[m_curT2CharCount]->setObjectVelocityY(1.0f);
-				}
-				m_p_Object_T2_Char[m_curT2CharCount]->setObjcetLife(10.0f);
-				m_p_Object_T2_Char[m_curT2CharCount]->setObjectSpeed(150.0f);
-				m_p_Object_T2_Char[m_curT2CharCount]->setObjectID(OBJECT_TEAM_2);
+			++m_curT2CharCount;
+			m_p_Object_Char = new Object();
+			m_p_Object_Char->setObjectInfo(x, y, 0.0f, 10.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+			m_p_Object_Char->setObjectVelocityX(ur_randomVelocityX(dre));
+			m_p_Object_Char->setObjectVelocityY(ur_randomT2VelocityY(dre));
+			if (m_p_Object_Char->getObjectVelocity().x == 0.0f && m_p_Object_Char->getObjectVelocity().y == 0.0f) {
+				m_p_Object_Char->setObjectVelocityX(ur_randomVelocityX(dre));
+				m_p_Object_Char->setObjectVelocityY(1.0f);
 			}
+			m_p_Object_Char->setObjcetLife(10.0f);
+			m_p_Object_Char->setObjectSpeed(300.0f);
+			m_p_Object_Char->setObjectID(id);
+
+			m_CharObj_List.push_back(*m_p_Object_Char);
 		}
 
 		break;
 
 	case OBJECT_BULLET:
-		if (m_curBulletCount < MAX_BULLETS_COUNT - 1)
+		if (m_curBulletCount < MAX_BULLET_COUNT)
 		{
 			++m_curBulletCount;
-			m_p_Object_Bullets[m_curBulletCount] = new Object();
+			m_p_Object_Bullets = new Object();
 			if (id == OBJECT_TEAM_1)
-				m_p_Object_Bullets[m_curBulletCount]->setObjectInfo(x, y, 0.0f, 2.0f, 1.0f, 0.0f, 0.0f, 1.0f);
-			else if (id == OBJECT_TEAM_2)
-				m_p_Object_Bullets[m_curBulletCount]->setObjectInfo(x, y, 0.0f, 2.0f, 0.0f, 0.0f, 1.0f, 1.0f);
-			m_p_Object_Bullets[m_curBulletCount]->setObjectVelocityX(ui_randomVelocityX(dre));
-			m_p_Object_Bullets[m_curBulletCount]->setObjectVelocityY(ui_randomVelocityY(dre));
-			if (m_p_Object_Bullets[m_curBulletCount]->getObjectVelocity().x == 0.0f && m_p_Object_Bullets[m_curBulletCount]->getObjectVelocity().y == 0.0f) {
-				m_p_Object_Bullets[m_curBulletCount]->setObjectVelocityX(1.0f);
-				m_p_Object_Bullets[m_curBulletCount]->setObjectVelocityY(1.0f);
+			{
+				m_p_Object_Bullets->setObjectInfo(x, y, 0.0f, 2.0f, 1.0f, 0.0f, 0.0f, 1.0f);
+				m_p_Object_Bullets->setObjectVelocityX(ur_randomVelocityX(dre));
+				m_p_Object_Bullets->setObjectVelocityY(ur_randomT1VelocityY(dre));
+				if (m_p_Object_Bullets->getObjectVelocity().x == 0.0f && m_p_Object_Bullets->getObjectVelocity().y == 0.0f) {
+					m_p_Object_Bullets->setObjectVelocityX(ur_randomVelocityX(dre));
+					m_p_Object_Bullets->setObjectVelocityY(-1.0f);
+				}
 			}
-			m_p_Object_Bullets[m_curBulletCount]->setObjcetLife(20.0f);
-			m_p_Object_Bullets[m_curBulletCount]->setObjectSpeed(300.0f);
-			m_p_Object_Bullets[m_curBulletCount]->setObjectID(id);
-		}
+			else if (id == OBJECT_TEAM_2)
+			{
+				m_p_Object_Bullets->setObjectInfo(x, y, 0.0f, 2.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+				m_p_Object_Bullets->setObjectVelocityX(ur_randomVelocityX(dre));
+				m_p_Object_Bullets->setObjectVelocityY(ur_randomT2VelocityY(dre));
+				if (m_p_Object_Bullets->getObjectVelocity().x == 0.0f && m_p_Object_Bullets->getObjectVelocity().y == 0.0f) {
+					m_p_Object_Bullets->setObjectVelocityX(ur_randomVelocityX(dre));
+					m_p_Object_Bullets->setObjectVelocityY(1.0f);
+				}
+			}
+			m_p_Object_Bullets->setObjcetLife(20.0f);
+			m_p_Object_Bullets->setObjectSpeed(600.0f);
+			m_p_Object_Bullets->setObjectID(id);
 
+			m_BulletObj_List.push_back(*m_p_Object_Bullets);
+		}
 		break;
 
 	case OBJECT_ARROW:
-		if (m_curArrowCount < MAX_ARROWS_COUNT - 1)
+		if (m_curArrowCount < MAX_ARROW_COUNT)
 		{
 			++m_curArrowCount;
-			m_p_Object_Arrows[m_curArrowCount] = new Object();
-			m_p_Object_Arrows[m_curArrowCount]->setObjectInfo(x, y, 0.0f, 2.0f, 0.0f, 1.0f, 0.0f, 1.0f);
-			m_p_Object_Arrows[m_curArrowCount]->setObjcetLife(10.0f);
-			m_p_Object_Arrows[m_curArrowCount]->setObjectSpeed(100.0f);
-			m_p_Object_Arrows[m_curArrowCount]->setObjectID(id);
+			m_p_Object_Arrows = new Object();
+			if (id == OBJECT_TEAM_1) m_p_Object_Arrows->setObjectInfo(x, y, 0.0f, 2.0f, 0.5f, 0.2f, 0.7f, 1.0f);
+			else if (id == OBJECT_TEAM_2) m_p_Object_Arrows->setObjectInfo(x, y, 0.0f, 2.0f, 1.0f, 1.0f, 0.0f, 1.0f);
+			m_p_Object_Arrows->setObjcetLife(10.0f);
+			m_p_Object_Arrows->setObjectSpeed(100.0f);
+			m_p_Object_Arrows->setObjectID(id);
+
+			m_ArrowObj_List.push_back(*m_p_Object_Arrows);
 		}
 		break;
 	}
@@ -157,73 +139,54 @@ void SceneMgr::BuildObjects(float x, float y, int id, int type)
 
 
 void SceneMgr::DrawObjects() {
-	if (m_p_Object_Bullets != NULL)
+	
+	// 중앙선
+	for (int i = -WINDOWSIZE_WIDTH / 2; i < WINDOWSIZE_WIDTH / 2; ++i)
+		m_p_Renderer->DrawSolidRect(i, 0, 0, 1, 1, 1, 1, 1);
+
+	if (!m_BulletObj_List.empty()) // 총알
 	{
-		for (int i = 0; i <= m_curBulletCount; ++i)
+		for (m_iter_bullet = m_BulletObj_List.begin(); m_iter_bullet != m_BulletObj_List.end(); ++m_iter_bullet)
 		{
 			m_p_Renderer->DrawSolidRect(
-				m_p_Object_Bullets[i]->getObjectPosition_X(), m_p_Object_Bullets[i]->getObjectPosition_Y(), m_p_Object_Bullets[i]->getObjectPosition_Z(),
-				m_p_Object_Bullets[i]->getObjectSize(),
-				m_p_Object_Bullets[i]->getObjectColor_R(), m_p_Object_Bullets[i]->getObjectColor_G(), m_p_Object_Bullets[i]->getObjectColor_B(), m_p_Object_Bullets[i]->getObjectColor_A());
+				m_iter_bullet->getObjectPosition_X(), m_iter_bullet->getObjectPosition_Y(), m_iter_bullet->getObjectPosition_Z(),
+				m_iter_bullet->getObjectSize(),
+				m_iter_bullet->getObjectColor_R(), m_iter_bullet->getObjectColor_G(), m_iter_bullet->getObjectColor_B(), m_iter_bullet->getObjectColor_A());
 		}
 	}
 
-	if (m_p_Object_Arrows != NULL)
+	if (!m_ArrowObj_List.empty()) // 화살
 	{
-		for (int i = 0; i <= m_curArrowCount; ++i)
+		for (m_iter_arrow = m_ArrowObj_List.begin(); m_iter_arrow != m_ArrowObj_List.end(); ++m_iter_arrow)
 		{
 			m_p_Renderer->DrawSolidRect(
-				m_p_Object_Arrows[i]->getObjectPosition_X(), m_p_Object_Arrows[i]->getObjectPosition_Y(), m_p_Object_Arrows[i]->getObjectPosition_Z(),
-				m_p_Object_Arrows[i]->getObjectSize(),
-				m_p_Object_Arrows[i]->getObjectColor_R(), m_p_Object_Arrows[i]->getObjectColor_G(), m_p_Object_Arrows[i]->getObjectColor_B(), m_p_Object_Arrows[i]->getObjectColor_A());
+				m_iter_arrow->getObjectPosition_X(), m_iter_arrow->getObjectPosition_Y(), m_iter_arrow->getObjectPosition_Z(),
+				m_iter_arrow->getObjectSize(),
+				m_iter_arrow->getObjectColor_R(), m_iter_arrow->getObjectColor_G(), m_iter_arrow->getObjectColor_B(), m_iter_arrow->getObjectColor_A());
 		}
 	}
 
-	if (m_p_Object_T1_Char != NULL)
+	if (!m_CharObj_List.empty()) // 캐릭터
 	{
-		for (int i = 0; i <= m_curT1CharCount; ++i)
+		for (m_iter_char = m_CharObj_List.begin(); m_iter_char != m_CharObj_List.end(); ++m_iter_char)
 		{
 			m_p_Renderer->DrawSolidRect(
-				m_p_Object_T1_Char[i]->getObjectPosition_X(), m_p_Object_T1_Char[i]->getObjectPosition_Y(), m_p_Object_T1_Char[i]->getObjectPosition_Z(),
-				m_p_Object_T1_Char[i]->getObjectSize(),
-				m_p_Object_T1_Char[i]->getObjectColor_R(), m_p_Object_T1_Char[i]->getObjectColor_G(), m_p_Object_T1_Char[i]->getObjectColor_B(), m_p_Object_T1_Char[i]->getObjectColor_A());
-		}
-	}
-	if (m_p_Object_T2_Char != NULL)
-	{
-		for (int i = 0; i <= m_curT2CharCount; ++i)
-		{
-			cout << "d" << endl;
-			m_p_Renderer->DrawSolidRect(
-				m_p_Object_T2_Char[i]->getObjectPosition_X(), m_p_Object_T2_Char[i]->getObjectPosition_Y(), m_p_Object_T2_Char[i]->getObjectPosition_Z(),
-				m_p_Object_T2_Char[i]->getObjectSize(),
-				m_p_Object_T2_Char[i]->getObjectColor_R(), m_p_Object_T2_Char[i]->getObjectColor_G(), m_p_Object_T2_Char[i]->getObjectColor_B(), m_p_Object_T2_Char[i]->getObjectColor_A());
+				m_iter_char->getObjectPosition_X(), m_iter_char->getObjectPosition_Y(), m_iter_char->getObjectPosition_Z(),
+				m_iter_char->getObjectSize(),
+				m_iter_char->getObjectColor_R(), m_iter_char->getObjectColor_G(), m_iter_char->getObjectColor_B(), m_iter_char->getObjectColor_A());
 		}
 	}
 
-	if (m_p_Object_T1_Building != NULL)
+	if (!m_BuildingObj_List.empty()) // 건물
 	{
-		for (int i = 0; i < MAX_T1_BUILDING_COUNT; ++i)
+		for (m_iter_building = m_BuildingObj_List.begin(); m_iter_building != m_BuildingObj_List.end(); ++m_iter_building)
 		{
 			m_p_Renderer->DrawTexturedRect
 			(
-				m_p_Object_T1_Building[i]->getObjectPosition_X(), m_p_Object_T1_Building[i]->getObjectPosition_Y(), m_p_Object_T1_Building[i]->getObjectPosition_Z(),
-				m_p_Object_T1_Building[i]->getObjectSize(),
-				m_p_Object_T1_Building[i]->getObjectColor_R(), m_p_Object_T1_Building[i]->getObjectColor_G(), m_p_Object_T1_Building[i]->getObjectColor_B(), m_p_Object_T1_Building[i]->getObjectColor_A(),
-				m_p_Object_T1_Building[i]->getTextureID()
-			);
-		}
-	}
-	if (m_p_Object_T2_Building != NULL)
-	{
-		for (int i = 0; i < MAX_T2_BUILDING_COUNT; ++i)
-		{
-			m_p_Renderer->DrawTexturedRect
-			(
-				m_p_Object_T2_Building[i]->getObjectPosition_X(), m_p_Object_T2_Building[i]->getObjectPosition_Y(), m_p_Object_T2_Building[i]->getObjectPosition_Z(),
-				m_p_Object_T2_Building[i]->getObjectSize(),
-				m_p_Object_T2_Building[i]->getObjectColor_R(), m_p_Object_T2_Building[i]->getObjectColor_G(), m_p_Object_T2_Building[i]->getObjectColor_B(), m_p_Object_T2_Building[i]->getObjectColor_A(),
-				m_p_Object_T2_Building[i]->getTextureID()
+				m_iter_building->getObjectPosition_X(), m_iter_building->getObjectPosition_Y(), m_iter_building->getObjectPosition_Z(),
+				m_iter_building->getObjectSize(),
+				m_iter_building->getObjectColor_R(), m_iter_building->getObjectColor_G(), m_iter_building->getObjectColor_B(), m_iter_building->getObjectColor_A(),
+				m_iter_building->getTextureID()
 			);
 		}
 	}
@@ -232,215 +195,152 @@ void SceneMgr::DrawObjects() {
 
 void SceneMgr::ObjectsCollisionCheck()
 {
-	// T1
-	for (int i = 0; i <= m_curT1CharCount; ++i)
+	if (!m_BulletObj_List.empty()) // 총알과
 	{
-		// 건물 & 캐릭터 충돌체크
-		for (int j = 0; j < m_curT2BuildingCount; ++j)
-		if (m_p_Object_T2_Building != NULL && m_p_Object_T1_Char != NULL)
+		for (m_iter_bullet = m_BulletObj_List.begin(); m_iter_bullet != m_BulletObj_List.end(); ++m_iter_bullet)
 		{
-			if (m_p_Object_T1_Char[i]->IsCollide ( m_p_Object_T1_Char[i]->getObjectCollider() ) )
+			if (!m_CharObj_List.empty()) // 캐릭터
 			{
-				m_p_Object_T2_Building[j]->damageObjcetLife(-m_p_Object_T1_Char[i]->getObjectLife());
-				m_p_Object_T1_Char[i]->damageObjcetLife(-10.0f);
-			}
-		}
-
-		// 총알 & 캐릭터 충돌체크
-		if (m_p_Object_T1_Char != NULL && m_p_Object_Bullets != NULL)
-		{
-			for (int j = 0; j <= m_curBulletCount; ++j)
-			{
-				if (m_p_Object_T1_Char[i]->getObjectID() != m_p_Object_Bullets[j]->getObjectID()
-					&&
-					m_p_Object_T1_Char[i]->IsCollide(m_p_Object_Bullets[j]->getObjectCollider()))
+				for (m_iter_char = m_CharObj_List.begin(); m_iter_char != m_CharObj_List.end(); ++m_iter_char)
 				{
-					m_p_Object_T1_Char[i]->damageObjcetLife(-m_p_Object_Bullets[j]->getObjectLife());
-					m_p_Object_Bullets[j]->damageObjcetLife(-20.0f);
-				}
-			}
-		}
-
-		// 화살 & 캐릭터 충돌체크
-		if (m_p_Object_T1_Char != NULL && m_p_Object_Arrows != NULL)
-		{
-			for (int j = 0; j <= m_curArrowCount; ++j)
-			{
-				if (m_p_Object_T1_Char[i]->getObjectID() != m_p_Object_Arrows[j]->getObjectID()
-					&& // id가 다른것만 충돌체크.
-					m_p_Object_T1_Char[i]->IsCollide(m_p_Object_Arrows[j]->getObjectCollider()))
+					if ((m_iter_bullet->getObjectID() != m_iter_char->getObjectID()) && m_iter_char->IsCollide(m_iter_bullet->getObjectCollider()))
 					{
-						m_p_Object_T1_Char[i]->damageObjcetLife(-m_p_Object_Arrows[j]->getObjectLife());
-						m_p_Object_Arrows[j]->damageObjcetLife(-10.0f);
+						m_iter_char->damageObjcetLife(-m_iter_bullet->getObjectLife());
+						m_iter_bullet->damageObjcetLife(-20.0f);
 					}
+				}
+			}
+
+			if (!m_BuildingObj_List.empty()) // 건물
+			{
+				for (m_iter_building = m_BuildingObj_List.begin(); m_iter_building != m_BuildingObj_List.end(); ++m_iter_building)
+				{
+					if ((m_iter_bullet->getObjectID() != m_iter_building->getObjectID()) && m_iter_building->IsCollide(m_iter_bullet->getObjectCollider()))
+					{
+						m_iter_building->damageObjcetLife(-m_iter_bullet->getObjectLife());
+						m_iter_bullet->damageObjcetLife(-20.0f);
+					}
+				}
 			}
 		}
 	}
 
-	for (int i = 0; i < m_curT1BuildingCount; ++i)
+
+	if (!m_ArrowObj_List.empty()) // 화살과
 	{
-		if (m_p_Object_T1_Building != NULL && m_p_Object_Arrows != NULL)
+		for (m_iter_arrow = m_ArrowObj_List.begin(); m_iter_arrow != m_ArrowObj_List.end(); ++m_iter_arrow)
 		{
-			for (int j = 0; j <= m_curArrowCount; ++j)
+			if (!m_CharObj_List.empty()) // 캐릭터
 			{
-				// 화살 & 건물 충돌체크
-				if (m_p_Object_T1_Building[i]->getObjectID() != m_p_Object_Arrows[j]->getObjectID()
-					&&
-					m_p_Object_T1_Building[i]->IsCollide(m_p_Object_Arrows[j]->getObjectCollider()))
+				for (m_iter_char = m_CharObj_List.begin(); m_iter_char != m_CharObj_List.end(); ++m_iter_char)
 				{
-					m_p_Object_T1_Building[i]->damageObjcetLife(-m_p_Object_Arrows[j]->getObjectLife());
-					m_p_Object_Arrows[j]->damageObjcetLife(-10.0f);
+					if ((m_iter_arrow->getObjectID() != m_iter_char->getObjectID()) && m_iter_char->IsCollide(m_iter_arrow->getObjectCollider()))
+					{
+						m_iter_char->damageObjcetLife(-m_iter_arrow->getObjectLife());
+						m_iter_arrow->damageObjcetLife(-20.0f);
+					}
+				}
+			}
+			if (!m_BuildingObj_List.empty()) // 건물
+			{
+				for (m_iter_building = m_BuildingObj_List.begin(); m_iter_building != m_BuildingObj_List.end(); ++m_iter_building)
+				{
+					if ((m_iter_arrow->getObjectID() != m_iter_building->getObjectID()) && m_iter_building->IsCollide(m_iter_arrow->getObjectCollider()))
+					{
+						m_iter_building->damageObjcetLife(-m_iter_arrow->getObjectLife());
+						m_iter_arrow->damageObjcetLife(-20.0f);
+					}
 				}
 			}
 		}
 	}
 
-
-	// T2
-	for (int i = 0; i <= m_curT2CharCount; ++i)
+	if (!m_CharObj_List.empty()) // 캐릭터와
 	{
-		// 건물 & 캐릭터 충돌체크
-		for (int j = 0; j < m_curT1BuildingCount; ++j)
-			if (m_p_Object_T1_Building != NULL && m_p_Object_T2_Char != NULL)
-			{
-				if (m_p_Object_T2_Char[i]->IsCollide(m_p_Object_T2_Char[i]->getObjectCollider()))
-				{
-					m_p_Object_T1_Building[j]->damageObjcetLife(-m_p_Object_T2_Char[i]->getObjectLife());
-					m_p_Object_T2_Char[i]->damageObjcetLife(-10.0f);
-				}
-			}
-
-		// 총알 & 캐릭터 충돌체크
-		if (m_p_Object_T2_Char != NULL && m_p_Object_Bullets != NULL)
+		for (m_iter_char = m_CharObj_List.begin(); m_iter_char != m_CharObj_List.end(); ++m_iter_char)
 		{
-			for (int j = 0; j <= m_curBulletCount; ++j)
+			if (!m_BuildingObj_List.empty()) // 건물
 			{
-				if (m_p_Object_T2_Char[i]->getObjectID() != m_p_Object_Bullets[j]->getObjectID()
-					&&
-					m_p_Object_T2_Char[i]->IsCollide(m_p_Object_Bullets[j]->getObjectCollider()))
+				for (m_iter_building = m_BuildingObj_List.begin(); m_iter_building != m_BuildingObj_List.end(); ++m_iter_building)
 				{
-					m_p_Object_T2_Char[i]->damageObjcetLife(-m_p_Object_Bullets[j]->getObjectLife());
-					m_p_Object_Bullets[j]->damageObjcetLife(-20.0f);
-				}
-			}
-		}
-
-		// 화살 & 캐릭터 충돌체크
-		if (m_p_Object_T2_Char != NULL && m_p_Object_Arrows != NULL)
-		{
-			for (int j = 0; j <= m_curArrowCount; ++j)
-			{
-				if (m_p_Object_T2_Char[i]->getObjectID() != m_p_Object_Arrows[j]->getObjectID()
-					&& // id가 다른것만 충돌체크.
-					m_p_Object_T2_Char[i]->IsCollide(m_p_Object_Arrows[j]->getObjectCollider()))
-				{
-					m_p_Object_T2_Char[i]->damageObjcetLife(-m_p_Object_Arrows[j]->getObjectLife());
-					m_p_Object_Arrows[j]->damageObjcetLife(-10.0f);
+					if ((m_iter_char->getObjectID() != m_iter_building->getObjectID()) && m_iter_building->IsCollide(m_iter_char->getObjectCollider()))
+					{
+						m_iter_building->damageObjcetLife(-m_iter_char->getObjectLife());
+						m_iter_char->damageObjcetLife(-10.0f);
+					}
 				}
 			}
 		}
 	}
-
-	for (int i = 0; i < m_curT2BuildingCount; ++i)
-	{
-		if (m_p_Object_T2_Building != NULL && m_p_Object_Arrows != NULL)
-		{
-			for (int j = 0; j <= m_curArrowCount; ++j)
-			{
-				// 화살 & 건물 충돌체크
-				if (m_p_Object_T2_Building[i]->getObjectID() != m_p_Object_Arrows[j]->getObjectID()
-					&&
-					m_p_Object_T2_Building[i]->IsCollide(m_p_Object_Arrows[j]->getObjectCollider()))
-				{
-					m_p_Object_T2_Building[i]->damageObjcetLife(-m_p_Object_Arrows[j]->getObjectLife());
-					m_p_Object_Arrows[j]->damageObjcetLife(-10.0f);
-				}
-			}
-		}
-	}
+	
 }
 
 
 void SceneMgr::UpdateObjects(float elapsedTime)
 {
-
-	// 캐릭터 업데이트
-	for (int i = 0; i <= m_curT1CharCount; ++i)
+	// 북쪽 진영 캐릭터 생성
+	plusElapsedTime(elapsedTime / 1000.0f);
+	if (getElapsedTime() >= 5.0f) // 5.0초 마다 Team1 캐릭터 생성
 	{
-		m_p_Object_T1_Char[i]->plusObjectCoolTime(elapsedTime/1000.0f);
-		m_p_Object_T1_Char[i]->update(elapsedTime);
-		if (m_p_Object_T1_Char[i]->getObjectCoolTime() >= 0.5f) // 0.5초 마다 화살 생성
-		{
-			m_p_Object_T1_Char[i]->setObjectCoolTime(0.0f);
-			BuildObjects
-			(
-				m_p_Object_T1_Char[i]->getObjectPosition_X() + m_p_Object_T1_Char[i]->getObjectVelocity().x * 20.0f,
-				m_p_Object_T1_Char[i]->getObjectPosition_Y() + m_p_Object_T1_Char[i]->getObjectVelocity().y * 20.0f,
-				m_p_Object_T1_Char[i]->getObjectID(),
-				OBJECT_ARROW
-			);
-			m_p_Object_Arrows[m_curArrowCount]->setObjectVelocityX(m_p_Object_T1_Char[i]->getObjectVelocity().x);
-			m_p_Object_Arrows[m_curArrowCount]->setObjectVelocityY(m_p_Object_T1_Char[i]->getObjectVelocity().y);
-		}
+		setElapsedTime(0.0f);
+		BuildObjects
+		(
+			ur_randomPosX(dre),
+			ur_randomPosY(dre),
+			OBJECT_TEAM_1,
+			OBJECT_CHARACTER
+		);
 	}
 
-	for (int i = 0; i <= m_curT2CharCount; ++i)
+	// 캐릭터 업데이트
+	if (!m_CharObj_List.empty())
 	{
-		m_p_Object_T2_Char[i]->plusObjectCoolTime(elapsedTime / 1000.0f);
-		m_p_Object_T2_Char[i]->update(elapsedTime);
-		if (m_p_Object_T2_Char[i]->getObjectCoolTime() >= 0.5f) // 0.5초 마다 화살 생성
+		for (m_iter_char = m_CharObj_List.begin(); m_iter_char != m_CharObj_List.end(); ++m_iter_char)
 		{
-			m_p_Object_T2_Char[i]->setObjectCoolTime(0.0f);
-			BuildObjects
-			(
-				m_p_Object_T2_Char[i]->getObjectPosition_X() + m_p_Object_T2_Char[i]->getObjectVelocity().x * 20.0f,
-				m_p_Object_T2_Char[i]->getObjectPosition_Y() + m_p_Object_T2_Char[i]->getObjectVelocity().y * 20.0f,
-				m_p_Object_T2_Char[i]->getObjectID(),
-				OBJECT_ARROW
-			);
-			m_p_Object_Arrows[m_curArrowCount]->setObjectVelocityX(m_p_Object_T2_Char[i]->getObjectVelocity().x);
-			m_p_Object_Arrows[m_curArrowCount]->setObjectVelocityY(m_p_Object_T2_Char[i]->getObjectVelocity().y);
+			m_iter_char->plusObjectCoolTime(elapsedTime / 1000.0f);
+			m_iter_char->update(elapsedTime);
+			if (m_iter_char->getObjectCoolTime() >= 3.0f) // 3.0초 마다 화살 생성
+			{
+				m_iter_char->setObjectCoolTime(0.0f);
+				BuildObjects
+				(
+					m_iter_char->getObjectPosition_X() + m_iter_char->getObjectVelocity().x * 20.0f,
+					m_iter_char->getObjectPosition_Y() + m_iter_char->getObjectVelocity().y * 20.0f,
+					m_iter_char->getObjectID(),
+					OBJECT_ARROW
+				);
+				m_ArrowObj_List.back().setObjectVelocityX(m_iter_char->getObjectVelocity().x);
+				m_ArrowObj_List.back().setObjectVelocityY(m_iter_char->getObjectVelocity().y);
+			}
 		}
 	}
 
 	// 건물 업데이트
-	for (int i = 0; i < m_curT1BuildingCount; ++i)
+	if (!m_BuildingObj_List.empty())
 	{
-		if (m_p_Object_T1_Building != NULL)
+		for (m_iter_building = m_BuildingObj_List.begin(); m_iter_building != m_BuildingObj_List.end(); ++m_iter_building)
 		{
-			m_p_Object_T1_Building[i]->plusObjectCoolTime(elapsedTime / 1000.0f);
-			if (m_p_Object_T1_Building[i]->getObjectCoolTime() >= 0.5f) // 0.5초 마다 총알 생성
+			m_iter_building->plusObjectCoolTime(elapsedTime / 1000.0f);
+			if (m_iter_building->getObjectCoolTime() >= 10.0f) // 10.0초 마다 총알 생성
 			{
-				m_p_Object_T1_Building[i]->setObjectCoolTime(0.0f);
-				BuildObjects(m_p_Object_T1_Building[i]->getObjectPosition_X(), m_p_Object_T1_Building[i]->getObjectPosition_Y(), m_p_Object_T1_Building[i]->getObjectID(), OBJECT_BULLET);
-			}
-		}
-	}
-	for (int i = 0; i < m_curT2BuildingCount; ++i)
-	{
-		if (m_p_Object_T2_Building != NULL)
-		{
-			m_p_Object_T2_Building[i]->plusObjectCoolTime(elapsedTime / 1000.0f);
-			if (m_p_Object_T2_Building[i]->getObjectCoolTime() >= 0.5f) // 0.5초 마다 총알 생성
-			{
-				m_p_Object_T2_Building[i]->setObjectCoolTime(0.0f);
-				BuildObjects(m_p_Object_T2_Building[i]->getObjectPosition_X(), m_p_Object_T2_Building[i]->getObjectPosition_Y(), m_p_Object_T2_Building[i]->getObjectID(), OBJECT_BULLET);
+				m_iter_building->setObjectCoolTime(0.0f);
+				BuildObjects(m_iter_building->getObjectPosition_X(), m_iter_building->getObjectPosition_Y(), m_iter_building->getObjectID(), OBJECT_BULLET);
 			}
 		}
 	}
 
 	// 총알 업데이트
-	if (m_p_Object_Bullets != NULL)
+	if (!m_BulletObj_List.empty())
 	{
-		for (int i = 0; i <= m_curBulletCount; ++i)
-			m_p_Object_Bullets[i]->update(elapsedTime);
+		for (m_iter_bullet = m_BulletObj_List.begin(); m_iter_bullet != m_BulletObj_List.end(); ++m_iter_bullet)
+			m_iter_bullet->update(elapsedTime);
 	}
 
 	// 화살 업데이트
-	if (m_p_Object_Arrows != NULL)
+	if (!m_ArrowObj_List.empty())
 	{
-		for (int i = 0; i <= m_curArrowCount; ++i)
-			m_p_Object_Arrows[i]->update(elapsedTime);
+		for (m_iter_arrow = m_ArrowObj_List.begin(); m_iter_arrow != m_ArrowObj_List.end(); ++m_iter_arrow)
+			m_iter_arrow->update(elapsedTime);
 	}
 
 	ObjectsCollisionCheck(); // 충돌 검사
@@ -450,178 +350,79 @@ void SceneMgr::UpdateObjects(float elapsedTime)
 
 void SceneMgr::CheckDeadObject()
 {
-	if (m_p_Object_T1_Char != nullptr)
+	if (!m_CharObj_List.empty())
 	{
-		for (int i = 0; i <= m_curT1CharCount; ++i)
+		m_iter_char = m_CharObj_List.begin();
+		while (m_iter_char != m_CharObj_List.end())
 		{
-			if (m_p_Object_T1_Char[i]->getObjectIsDead())
+			if (m_iter_char->getObjectIsDead())
 			{
-				delete m_p_Object_T1_Char[i];
-				m_p_Object_T1_Char[i] = nullptr;
-				for (int j = i; j <= m_curT1CharCount; ++j)
-				{
-					m_p_Object_T1_Char[i] = m_p_Object_T1_Char[j];
-				}
-				--m_curT1CharCount;
-				--i;
+				if (m_iter_char->getObjectID() == OBJECT_TEAM_1) --m_curT1CharCount;
+				else if (m_iter_char->getObjectID() == OBJECT_TEAM_2) --m_curT2CharCount;
+				m_CharObj_List.erase(m_iter_char++);
 			}
-		}
-	}
-	if (m_p_Object_T2_Char != nullptr)
-	{
-		for (int i = 0; i <= m_curT2CharCount; ++i)
-		{
-			if (m_p_Object_T2_Char[i]->getObjectIsDead())
-			{
-				delete m_p_Object_T2_Char[i];
-				m_p_Object_T2_Char[i] = nullptr;
-				for (int j = i; j <= m_curT2CharCount; ++j)
-				{
-					m_p_Object_T2_Char[i] = m_p_Object_T2_Char[j];
-				}
-				--m_curT2CharCount;
-				--i;
-			}
+			else ++m_iter_char;
 		}
 	}
 
-	if (m_p_Object_Bullets != nullptr)
+	if (!m_BuildingObj_List.empty())
 	{
-		for (int i = 0; i <= m_curBulletCount; ++i)
+		m_iter_building = m_BuildingObj_List.begin();
+		while (m_iter_building != m_BuildingObj_List.end())
 		{
-			if (m_p_Object_Bullets[i]->getObjectIsDead())
-			{
-				delete m_p_Object_Bullets[i];
-				m_p_Object_Bullets[i] = nullptr;
-				for (int j = i; j <= m_curBulletCount; ++j)
-				{
-					m_p_Object_Bullets[i] = m_p_Object_Bullets[j];
-				}
-				--m_curBulletCount;
-				--i;
-			}
+			if (m_iter_building->getObjectIsDead()) m_BuildingObj_List.erase(m_iter_building++);
+			else ++m_iter_building;
 		}
 	}
 
-	if (m_p_Object_Arrows != nullptr)
+	if (!m_ArrowObj_List.empty())
 	{
-		for (int i = 0; i <= m_curArrowCount; ++i)
+		m_iter_arrow = m_ArrowObj_List.begin();
+		while (m_iter_arrow != m_ArrowObj_List.end())
 		{
-			if (m_p_Object_Arrows[i]->getObjectIsDead())
+			if (m_iter_arrow->getObjectIsDead())
 			{
-				delete m_p_Object_Arrows[i];
-				m_p_Object_Arrows[i] = nullptr;
-				for (int j = i; j <= m_curArrowCount; ++j)
-				{
-					m_p_Object_Arrows[i] = m_p_Object_Arrows[j];
-				}
 				--m_curArrowCount;
-				--i;
+				m_ArrowObj_List.erase(m_iter_arrow++);
 			}
+			else ++m_iter_arrow;
 		}
 	}
 
-	if (m_p_Object_T1_Building != nullptr)
+	if (!m_BulletObj_List.empty())
 	{
-		for (int i = 0; i < m_curT1BuildingCount; ++i)
+		m_iter_bullet = m_BulletObj_List.begin();
+		while (m_iter_bullet != m_BulletObj_List.end())
 		{
-			if (m_p_Object_T1_Building[i]->getObjectIsDead())
+			if (m_iter_bullet->getObjectIsDead())
 			{
-				delete m_p_Object_T1_Building[i];
-				m_p_Object_T1_Building[i] = nullptr;
-				for (int j = i; j <= m_curT1BuildingCount; ++j)
-				{
-					m_p_Object_T1_Building[i] = m_p_Object_T1_Building[j];
-				}
-				--m_curT1BuildingCount;
-				--i;
+				--m_curBulletCount;
+				m_BulletObj_List.erase(m_iter_bullet++);
 			}
+			else ++m_iter_bullet;
 		}
 	}
-	if (m_p_Object_T2_Building != nullptr)
-	{
-		for (int i = 0; i < m_curT2BuildingCount; ++i)
-		{
-			if (m_p_Object_T2_Building[i]->getObjectIsDead())
-			{
-				delete m_p_Object_T2_Building[i];
-				m_p_Object_T2_Building[i] = nullptr;
-				for (int j = i; j <= m_curT2BuildingCount; ++j)
-				{
-					m_p_Object_T2_Building[i] = m_p_Object_T2_Building[j];
-				}
-				--m_curT2BuildingCount;
-				--i;
-			}
-		}
-	}
+
 };
 
 
 void SceneMgr::DestroyObjects()
 {
-	if (m_p_Object_T1_Char != NULL)
+	if (!m_CharObj_List.empty())
 	{
-		for (int i = 0; i < MAX_T1_CHAR_COUNT; ++i)
-		{
-			if (m_p_Object_T1_Char[i])
-			{
-				delete m_p_Object_T1_Char[i];
-			}
-		}
+		m_CharObj_List.erase(m_CharObj_List.begin(), m_CharObj_List.end());
 	}
-	if (m_p_Object_T2_Char != NULL)
+	if (!m_ArrowObj_List.empty())
 	{
-		for (int i = 0; i < MAX_T2_CHAR_COUNT; ++i)
-		{
-			if (m_p_Object_T2_Char[i])
-			{
-				delete m_p_Object_T2_Char[i];
-			}
-		}
+		m_ArrowObj_List.erase(m_ArrowObj_List.begin(), m_ArrowObj_List.end());
 	}
-
-	if (m_p_Object_Bullets != NULL)
+	if (!m_BuildingObj_List.empty())
 	{
-		for (int i = 0; i < MAX_BULLETS_COUNT; ++i)
-		{
-			if (m_p_Object_Bullets[i])
-			{
-				delete m_p_Object_Bullets[i];
-			}
-		}
+		m_BuildingObj_List.erase(m_BuildingObj_List.begin(), m_BuildingObj_List.end());
 	}
-
-	if (m_p_Object_Arrows != NULL)
+	if (!m_BulletObj_List.empty())
 	{
-		for (int i = 0; i < MAX_ARROWS_COUNT; ++i)
-		{
-			if (m_p_Object_Arrows[i])
-			{
-				delete m_p_Object_Arrows[i];
-			}
-		}
+		m_BulletObj_List.erase(m_BulletObj_List.begin(), m_BulletObj_List.end());
 	}
-
-	if (m_p_Object_T1_Building != NULL)
-	{
-		for (int i = 0; i < MAX_T1_BUILDING_COUNT; ++i)
-		{
-			if (m_p_Object_T1_Building[i])
-			{
-				delete m_p_Object_T1_Building[i];
-			}
-		}
-	}
-
-	if (m_p_Object_T2_Building != NULL)
-	{
-		for (int i = 0; i < MAX_T2_BUILDING_COUNT; ++i)
-		{
-			if (m_p_Object_T2_Building[i])
-			{
-				delete m_p_Object_T2_Building[i];
-			}
-		}
-	}
+	
 }
