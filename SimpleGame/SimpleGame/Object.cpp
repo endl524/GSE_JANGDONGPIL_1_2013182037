@@ -12,7 +12,7 @@ Object::~Object()
 }
 
 // 오브젝트 정보 setting
-void Object::setObjectInfo(float x, float y, float z, float size, float r, float g, float b, float a) {
+void Object::setObjectInfo(float x, float y, float z, float size, float r, float g, float b, float a, float l) {
 	m_objectPosition2D.x = x;
 	m_objectPosition2D.y = y;
 	m_objectPosition_Z = z;
@@ -21,6 +21,7 @@ void Object::setObjectInfo(float x, float y, float z, float size, float r, float
 	m_objectColor_G = g;
 	m_objectColor_B = b;
 	m_objectColor_A = a;
+	m_renderLevel = l;
 }
 
 // 오브젝트 움직임
@@ -42,12 +43,18 @@ Collider Object::getObjectCollider() {
 // 벽 충돌검사
 void Object::WallCollision() {
 	getObjectCollider();
-	if (m_objectCollider.maxX > WINDOWSIZE_WIDTH/2 || m_objectCollider.minX < -WINDOWSIZE_WIDTH/2) m_objectVelocity.x = -m_objectVelocity.x;
-	if (m_objectCollider.maxY > WINDOWSIZE_HEIGHT/2 || m_objectCollider.minY < -WINDOWSIZE_HEIGHT/2) m_objectVelocity.y = -m_objectVelocity.y;
+	if (m_objectCollider.maxX > WINDOWSIZE_WIDTH / 2 || m_objectCollider.minX < -WINDOWSIZE_WIDTH / 2)
+	{
+		m_objectVelocity.x = -m_objectVelocity.x;
+	}
+	if (m_objectCollider.maxY > WINDOWSIZE_HEIGHT/2 || m_objectCollider.minY < -WINDOWSIZE_HEIGHT/2) 
+	{
+		m_objectVelocity.y = -m_objectVelocity.y;
+	}
 }
 
 // 업데이트 함수
 void Object::update(float elapsedTime) {
 	Move(elapsedTime);
-	WallCollision();
+	//WallCollision();
 }

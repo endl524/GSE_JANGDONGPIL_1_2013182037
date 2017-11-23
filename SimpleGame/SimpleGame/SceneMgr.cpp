@@ -32,7 +32,7 @@ void SceneMgr::BuildObjects(float x, float y, int id, int type)
 		for (int i = 0; i < 3; ++i)
 		{
 			m_p_Object_Building = new Object();
-			m_p_Object_Building->setObjectInfo(x + i * 150.0f, y, 0.0f, 100.0f, 1.0f, 1.0f, 0.0f, 1.0f);
+			m_p_Object_Building->setObjectInfo(x + i * 150.0f, y, 0.0f, 100.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.1f);
 			m_p_Object_Building->setObjectVelocityX(0);
 			m_p_Object_Building->setObjectVelocityY(0);
 			m_p_Object_Building->setObjcetLife(500.0f);
@@ -53,7 +53,7 @@ void SceneMgr::BuildObjects(float x, float y, int id, int type)
 		{
 			++m_curT1CharCount;
 			m_p_Object_Char = new Object();
-			m_p_Object_Char->setObjectInfo(x, y, 0.0f, 10.0f, 1.0f, 0.0f, 0.0f, 1.0f);
+			m_p_Object_Char->setObjectInfo(x, y, 0.0f, 10.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.2f);
 			m_p_Object_Char->setObjectVelocityX(ur_randomVelocityX(dre));
 			m_p_Object_Char->setObjectVelocityY(ur_randomT1VelocityY(dre));
 			if (m_p_Object_Char->getObjectVelocity().x == 0.0f && m_p_Object_Char->getObjectVelocity().y == 0.0f) {
@@ -71,7 +71,7 @@ void SceneMgr::BuildObjects(float x, float y, int id, int type)
 		{
 			++m_curT2CharCount;
 			m_p_Object_Char = new Object();
-			m_p_Object_Char->setObjectInfo(x, y, 0.0f, 10.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+			m_p_Object_Char->setObjectInfo(x, y, 0.0f, 10.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.2f);
 			m_p_Object_Char->setObjectVelocityX(ur_randomVelocityX(dre));
 			m_p_Object_Char->setObjectVelocityY(ur_randomT2VelocityY(dre));
 			if (m_p_Object_Char->getObjectVelocity().x == 0.0f && m_p_Object_Char->getObjectVelocity().y == 0.0f) {
@@ -94,7 +94,7 @@ void SceneMgr::BuildObjects(float x, float y, int id, int type)
 			m_p_Object_Bullets = new Object();
 			if (id == OBJECT_TEAM_1)
 			{
-				m_p_Object_Bullets->setObjectInfo(x, y, 0.0f, 2.0f, 1.0f, 0.0f, 0.0f, 1.0f);
+				m_p_Object_Bullets->setObjectInfo(x, y, 0.0f, 2.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.3f);
 				m_p_Object_Bullets->setObjectVelocityX(ur_randomVelocityX(dre));
 				m_p_Object_Bullets->setObjectVelocityY(ur_randomT1VelocityY(dre));
 				if (m_p_Object_Bullets->getObjectVelocity().x == 0.0f && m_p_Object_Bullets->getObjectVelocity().y == 0.0f) {
@@ -104,7 +104,7 @@ void SceneMgr::BuildObjects(float x, float y, int id, int type)
 			}
 			else if (id == OBJECT_TEAM_2)
 			{
-				m_p_Object_Bullets->setObjectInfo(x, y, 0.0f, 2.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+				m_p_Object_Bullets->setObjectInfo(x, y, 0.0f, 2.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.3f);
 				m_p_Object_Bullets->setObjectVelocityX(ur_randomVelocityX(dre));
 				m_p_Object_Bullets->setObjectVelocityY(ur_randomT2VelocityY(dre));
 				if (m_p_Object_Bullets->getObjectVelocity().x == 0.0f && m_p_Object_Bullets->getObjectVelocity().y == 0.0f) {
@@ -125,8 +125,8 @@ void SceneMgr::BuildObjects(float x, float y, int id, int type)
 		{
 			++m_curArrowCount;
 			m_p_Object_Arrows = new Object();
-			if (id == OBJECT_TEAM_1) m_p_Object_Arrows->setObjectInfo(x, y, 0.0f, 2.0f, 0.5f, 0.2f, 0.7f, 1.0f);
-			else if (id == OBJECT_TEAM_2) m_p_Object_Arrows->setObjectInfo(x, y, 0.0f, 2.0f, 1.0f, 1.0f, 0.0f, 1.0f);
+			if (id == OBJECT_TEAM_1) m_p_Object_Arrows->setObjectInfo(x, y, 0.0f, 2.0f, 0.5f, 0.2f, 0.7f, 1.0f, 0.3f);
+			else if (id == OBJECT_TEAM_2) m_p_Object_Arrows->setObjectInfo(x, y, 0.0f, 2.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.3f);
 			m_p_Object_Arrows->setObjcetLife(10.0f);
 			m_p_Object_Arrows->setObjectSpeed(100.0f);
 			m_p_Object_Arrows->setObjectID(id);
@@ -142,7 +142,7 @@ void SceneMgr::DrawObjects() {
 	
 	// 중앙선
 	for (int i = -WINDOWSIZE_WIDTH / 2; i < WINDOWSIZE_WIDTH / 2; ++i)
-		m_p_Renderer->DrawSolidRect(i, 0, 0, 1, 1, 1, 1, 1);
+		m_p_Renderer->DrawSolidRect(i, 0, 0, 1, 1, 1, 1, 1, 0.0f);
 
 	if (!m_BulletObj_List.empty()) // 총알
 	{
@@ -151,7 +151,7 @@ void SceneMgr::DrawObjects() {
 			m_p_Renderer->DrawSolidRect(
 				m_iter_bullet->getObjectPosition_X(), m_iter_bullet->getObjectPosition_Y(), m_iter_bullet->getObjectPosition_Z(),
 				m_iter_bullet->getObjectSize(),
-				m_iter_bullet->getObjectColor_R(), m_iter_bullet->getObjectColor_G(), m_iter_bullet->getObjectColor_B(), m_iter_bullet->getObjectColor_A());
+				m_iter_bullet->getObjectColor_R(), m_iter_bullet->getObjectColor_G(), m_iter_bullet->getObjectColor_B(), m_iter_bullet->getObjectColor_A(), m_iter_bullet->getRenderLevel());
 		}
 	}
 
@@ -162,7 +162,7 @@ void SceneMgr::DrawObjects() {
 			m_p_Renderer->DrawSolidRect(
 				m_iter_arrow->getObjectPosition_X(), m_iter_arrow->getObjectPosition_Y(), m_iter_arrow->getObjectPosition_Z(),
 				m_iter_arrow->getObjectSize(),
-				m_iter_arrow->getObjectColor_R(), m_iter_arrow->getObjectColor_G(), m_iter_arrow->getObjectColor_B(), m_iter_arrow->getObjectColor_A());
+				m_iter_arrow->getObjectColor_R(), m_iter_arrow->getObjectColor_G(), m_iter_arrow->getObjectColor_B(), m_iter_arrow->getObjectColor_A(), m_iter_arrow->getRenderLevel());
 		}
 	}
 
@@ -173,7 +173,15 @@ void SceneMgr::DrawObjects() {
 			m_p_Renderer->DrawSolidRect(
 				m_iter_char->getObjectPosition_X(), m_iter_char->getObjectPosition_Y(), m_iter_char->getObjectPosition_Z(),
 				m_iter_char->getObjectSize(),
-				m_iter_char->getObjectColor_R(), m_iter_char->getObjectColor_G(), m_iter_char->getObjectColor_B(), m_iter_char->getObjectColor_A());
+				m_iter_char->getObjectColor_R(), m_iter_char->getObjectColor_G(), m_iter_char->getObjectColor_B(), m_iter_char->getObjectColor_A(), m_iter_char->getRenderLevel());
+			
+			m_p_Renderer->DrawSolidRectGauge(
+				m_iter_char->getObjectPosition_X(), m_iter_char->getObjectPosition_Y() + m_iter_char->getObjectSize() + 5.0f, m_iter_char->getObjectPosition_Z(),
+				m_iter_char->getObjectSize() + 20.0f, 10.0f,
+				m_iter_char->getObjectColor_R(), m_iter_char->getObjectColor_G(), m_iter_char->getObjectColor_B(), m_iter_char->getObjectColor_A(),
+				m_iter_char->getObjectLife() / 10.0f,
+				m_iter_char->getRenderLevel()
+			);
 		}
 	}
 
@@ -186,8 +194,28 @@ void SceneMgr::DrawObjects() {
 				m_iter_building->getObjectPosition_X(), m_iter_building->getObjectPosition_Y(), m_iter_building->getObjectPosition_Z(),
 				m_iter_building->getObjectSize(),
 				m_iter_building->getObjectColor_R(), m_iter_building->getObjectColor_G(), m_iter_building->getObjectColor_B(), m_iter_building->getObjectColor_A(),
-				m_iter_building->getTextureID()
+				m_iter_building->getTextureID(), m_iter_building->getRenderLevel()
 			);
+			if (m_iter_building->getObjectID() == OBJECT_TEAM_1)
+			{
+				m_p_Renderer->DrawSolidRectGauge(
+					m_iter_building->getObjectPosition_X(), m_iter_building->getObjectPosition_Y() + m_iter_building->getObjectSize() - 30.0f, m_iter_building->getObjectPosition_Z(),
+					m_iter_building->getObjectSize(), 10.0f,
+					1.0f, 0.0f, 0.0f, m_iter_building->getObjectColor_A(),
+					m_iter_building->getObjectLife() / 500.0f,
+					m_iter_building->getRenderLevel()
+				);
+			}
+			else if (m_iter_building->getObjectID() == OBJECT_TEAM_2)
+			{
+				m_p_Renderer->DrawSolidRectGauge(
+					m_iter_building->getObjectPosition_X()+5.0f, m_iter_building->getObjectPosition_Y() + m_iter_building->getObjectSize() - 30.0f, m_iter_building->getObjectPosition_Z(),
+					m_iter_building->getObjectSize(), 10.0f,
+					0.0f, 0.0f, 1.0f, m_iter_building->getObjectColor_A(),
+					m_iter_building->getObjectLife() / 500.0f,
+					m_iter_building->getRenderLevel()
+				);
+			}
 		}
 	}
 }
@@ -280,7 +308,7 @@ void SceneMgr::UpdateObjects(float elapsedTime)
 {
 	// 북쪽 진영 캐릭터 생성
 	plusElapsedTime(elapsedTime / 1000.0f);
-	if (getElapsedTime() >= 5.0f) // 5.0초 마다 Team1 캐릭터 생성
+	if (getElapsedTime() >= 2.0f) // 5.0초 마다 Team1 캐릭터 생성
 	{
 		setElapsedTime(0.0f);
 		BuildObjects
@@ -299,7 +327,8 @@ void SceneMgr::UpdateObjects(float elapsedTime)
 		{
 			m_iter_char->plusObjectCoolTime(elapsedTime / 1000.0f);
 			m_iter_char->update(elapsedTime);
-			if (m_iter_char->getObjectCoolTime() >= 3.0f) // 3.0초 마다 화살 생성
+			m_iter_char->WallCollision();
+			if (m_iter_char->getObjectCoolTime() >= 1.0f) // 3.0초 마다 화살 생성
 			{
 				m_iter_char->setObjectCoolTime(0.0f);
 				BuildObjects
@@ -321,7 +350,7 @@ void SceneMgr::UpdateObjects(float elapsedTime)
 		for (m_iter_building = m_BuildingObj_List.begin(); m_iter_building != m_BuildingObj_List.end(); ++m_iter_building)
 		{
 			m_iter_building->plusObjectCoolTime(elapsedTime / 1000.0f);
-			if (m_iter_building->getObjectCoolTime() >= 10.0f) // 10.0초 마다 총알 생성
+			if (m_iter_building->getObjectCoolTime() >= 5.0f) // 10.0초 마다 총알 생성
 			{
 				m_iter_building->setObjectCoolTime(0.0f);
 				BuildObjects(m_iter_building->getObjectPosition_X(), m_iter_building->getObjectPosition_Y(), m_iter_building->getObjectID(), OBJECT_BULLET);
@@ -333,14 +362,30 @@ void SceneMgr::UpdateObjects(float elapsedTime)
 	if (!m_BulletObj_List.empty())
 	{
 		for (m_iter_bullet = m_BulletObj_List.begin(); m_iter_bullet != m_BulletObj_List.end(); ++m_iter_bullet)
+		{
 			m_iter_bullet->update(elapsedTime);
+			Collider bull = m_iter_bullet->getObjectCollider();
+			if (bull.maxX > WINDOWSIZE_WIDTH / 2 || bull.minX < -WINDOWSIZE_WIDTH / 2
+				|| bull.maxY > WINDOWSIZE_HEIGHT / 2 || bull.minY < -WINDOWSIZE_HEIGHT / 2)
+			{
+				m_iter_bullet->setObjectIsDead(true);
+			}
+		}
 	}
 
 	// 화살 업데이트
 	if (!m_ArrowObj_List.empty())
 	{
 		for (m_iter_arrow = m_ArrowObj_List.begin(); m_iter_arrow != m_ArrowObj_List.end(); ++m_iter_arrow)
+		{
 			m_iter_arrow->update(elapsedTime);
+			Collider arrow = m_iter_arrow->getObjectCollider();
+			if (arrow.maxX > WINDOWSIZE_WIDTH / 2 || arrow.minX < -WINDOWSIZE_WIDTH / 2
+				|| arrow.maxY > WINDOWSIZE_HEIGHT / 2 || arrow.minY < -WINDOWSIZE_HEIGHT / 2)
+			{
+				m_iter_arrow->setObjectIsDead(true);
+			}
+		}
 	}
 
 	ObjectsCollisionCheck(); // 충돌 검사

@@ -29,6 +29,8 @@ private:
 	float m_objectLife;
 	bool m_objectIsDead = false;
 
+	float m_renderLevel;
+
 	float m_objectCoolTime = 0.0f;
 
 	int m_objectID;
@@ -40,7 +42,7 @@ public:
 	~Object();
 
 	// setRectAngle
-	void setObjectInfo(float x, float y, float z, float size, float r, float g, float b, float a);
+	void setObjectInfo(float x, float y, float z, float size, float r, float g, float b, float a, float l);
 
 	// position
 	float getObjectPosition_X() { return m_objectPosition2D.x; };
@@ -74,7 +76,8 @@ public:
 
 	// Collision
 	Collider getObjectCollider();
-	bool IsCollide(Collider other) {
+	bool IsCollide(Collider other)
+	{
 		if (getObjectCollider().minX <= other.maxX	&&	getObjectCollider().maxX >= other.minX	&&	getObjectCollider().minY <= other.maxY	&&	getObjectCollider().maxY >= other.minY)
 			return true;
 		else return false;
@@ -86,6 +89,7 @@ public:
 	void setObjcetLife(float l) { m_objectLife = l;};
 	float getObjectLife() { return m_objectLife; };
 	bool getObjectIsDead() { return m_objectIsDead; };
+	void setObjectIsDead(bool d) { m_objectIsDead = d; };
 
 
 	// CoolTime
@@ -93,6 +97,9 @@ public:
 	void plusObjectCoolTime(float ct) { m_objectCoolTime += ct; };
 	float getObjectCoolTime() { return m_objectCoolTime; };
 
+	// render level
+	void setRenderLevel(float l) { m_renderLevel = l; };
+	float getRenderLevel() { return m_renderLevel; };
 
 	// ID
 	void setObjectID(int id) { m_objectID = id; };
