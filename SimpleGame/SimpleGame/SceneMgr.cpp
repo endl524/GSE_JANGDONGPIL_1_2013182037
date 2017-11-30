@@ -7,6 +7,7 @@ default_random_engine dre(randomDevice());
 uniform_real_distribution<> ur_randomVelocityX(-1.0f, 1.0f);
 uniform_real_distribution<> ur_randomT1VelocityY(-1.0f, 0.0f);
 uniform_real_distribution<> ur_randomT2VelocityY(0.0f, 1.0f);
+uniform_real_distribution<> ur_randomBullet_VelocityX(-0.5f, 0.5f);
 
 uniform_real_distribution<> ur_randomPosX(-WINDOWSIZE_WIDTH / 2.0f + 10.0f, WINDOWSIZE_WIDTH / 2.0f - 10.0f);
 uniform_real_distribution<> ur_randomPosY(0.0f, WINDOWSIZE_HEIGHT / 2.0f - 10.0f);
@@ -15,6 +16,7 @@ uniform_real_distribution<> ur_randomPosY(0.0f, WINDOWSIZE_HEIGHT / 2.0f - 10.0f
 SceneMgr::SceneMgr()
 {
 	m_p_Renderer = new Renderer(WINDOWSIZE_WIDTH, WINDOWSIZE_HEIGHT);
+	m_BackgroundTextureID = m_p_Renderer->CreatePngTexture("./Resource/Background.png");
 }
 
 
@@ -53,7 +55,7 @@ void SceneMgr::BuildObjects(float x, float y, int id, int type)
 		{
 			++m_curT1CharCount;
 			m_p_Object_Char = new Object();
-			m_p_Object_Char->setObjectInfo(x, y, 0.0f, 10.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.2f);
+			m_p_Object_Char->setObjectInfo(x, y, 0.0f, 50.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.2f);
 			m_p_Object_Char->setObjectVelocityX(ur_randomVelocityX(dre));
 			m_p_Object_Char->setObjectVelocityY(ur_randomT1VelocityY(dre));
 			if (m_p_Object_Char->getObjectVelocity().x == 0.0f && m_p_Object_Char->getObjectVelocity().y == 0.0f) {
@@ -64,6 +66,14 @@ void SceneMgr::BuildObjects(float x, float y, int id, int type)
 			m_p_Object_Char->setObjectSpeed(300.0f);
 			m_p_Object_Char->setObjectID(id);
 
+			m_p_Object_Char->setTextureID(m_p_Renderer->CreatePngTexture("./Resource/Team1_Char.png"));
+
+			m_p_Object_Char->setAniCountX(0);
+			m_p_Object_Char->setAniCountY(0);
+
+			m_p_Object_Char->setMaxAniSizeX(10);
+			m_p_Object_Char->setMaxAniSizeY(1);
+
 			m_CharObj_List.push_back(*m_p_Object_Char);
 		}
 
@@ -71,7 +81,7 @@ void SceneMgr::BuildObjects(float x, float y, int id, int type)
 		{
 			++m_curT2CharCount;
 			m_p_Object_Char = new Object();
-			m_p_Object_Char->setObjectInfo(x, y, 0.0f, 10.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.2f);
+			m_p_Object_Char->setObjectInfo(x, y, 0.0f, 50.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.2f);
 			m_p_Object_Char->setObjectVelocityX(ur_randomVelocityX(dre));
 			m_p_Object_Char->setObjectVelocityY(ur_randomT2VelocityY(dre));
 			if (m_p_Object_Char->getObjectVelocity().x == 0.0f && m_p_Object_Char->getObjectVelocity().y == 0.0f) {
@@ -81,6 +91,14 @@ void SceneMgr::BuildObjects(float x, float y, int id, int type)
 			m_p_Object_Char->setObjcetLife(10.0f);
 			m_p_Object_Char->setObjectSpeed(300.0f);
 			m_p_Object_Char->setObjectID(id);
+
+			m_p_Object_Char->setTextureID(m_p_Renderer->CreatePngTexture("./Resource/Team2_Char.png"));
+
+			m_p_Object_Char->setAniCountX(0);
+			m_p_Object_Char->setAniCountY(0);
+
+			m_p_Object_Char->setMaxAniSizeX(10);
+			m_p_Object_Char->setMaxAniSizeY(1);
 
 			m_CharObj_List.push_back(*m_p_Object_Char);
 		}
@@ -94,24 +112,30 @@ void SceneMgr::BuildObjects(float x, float y, int id, int type)
 			m_p_Object_Bullets = new Object();
 			if (id == OBJECT_TEAM_1)
 			{
-				m_p_Object_Bullets->setObjectInfo(x, y, 0.0f, 2.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.3f);
-				m_p_Object_Bullets->setObjectVelocityX(ur_randomVelocityX(dre));
+				m_p_Object_Bullets->setObjectInfo(x, y, 0.0f, 20.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.3f);
+				m_p_Object_Bullets->setObjectVelocityX(ur_randomBullet_VelocityX(dre));
 				m_p_Object_Bullets->setObjectVelocityY(ur_randomT1VelocityY(dre));
 				if (m_p_Object_Bullets->getObjectVelocity().x == 0.0f && m_p_Object_Bullets->getObjectVelocity().y == 0.0f) {
 					m_p_Object_Bullets->setObjectVelocityX(ur_randomVelocityX(dre));
 					m_p_Object_Bullets->setObjectVelocityY(-1.0f);
 				}
+				m_p_Object_Bullets->setTextureID(m_p_Renderer->CreatePngTexture("./Resource/Bullet.png"));
+				m_p_Object_Bullets->setParticleDirY(1); // 파티클 방향 설정
 			}
+
 			else if (id == OBJECT_TEAM_2)
 			{
-				m_p_Object_Bullets->setObjectInfo(x, y, 0.0f, 2.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.3f);
-				m_p_Object_Bullets->setObjectVelocityX(ur_randomVelocityX(dre));
+				m_p_Object_Bullets->setObjectInfo(x, y, 0.0f, 20.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.3f);
+				m_p_Object_Bullets->setObjectVelocityX(ur_randomBullet_VelocityX(dre));
 				m_p_Object_Bullets->setObjectVelocityY(ur_randomT2VelocityY(dre));
 				if (m_p_Object_Bullets->getObjectVelocity().x == 0.0f && m_p_Object_Bullets->getObjectVelocity().y == 0.0f) {
 					m_p_Object_Bullets->setObjectVelocityX(ur_randomVelocityX(dre));
 					m_p_Object_Bullets->setObjectVelocityY(1.0f);
 				}
+				m_p_Object_Bullets->setTextureID(m_p_Renderer->CreatePngTexture("./Resource/Bullet.png"));
+				m_p_Object_Bullets->setParticleDirY(-1); // 파티클 방향 설정
 			}
+
 			m_p_Object_Bullets->setObjcetLife(20.0f);
 			m_p_Object_Bullets->setObjectSpeed(600.0f);
 			m_p_Object_Bullets->setObjectID(id);
@@ -138,8 +162,11 @@ void SceneMgr::BuildObjects(float x, float y, int id, int type)
 };
 
 
-void SceneMgr::DrawObjects() {
-	
+void SceneMgr::DrawObjects(float elapsedTime) {
+	// 배경화면
+	m_p_Renderer->DrawTexturedRect(0.0f, 0.0f, 0.0f, 800.0f, 1.0f, 1.0f, 1.0f, 0.8f, m_BackgroundTextureID, 0.99f);
+
+
 	// 중앙선
 	for (int i = -WINDOWSIZE_WIDTH / 2; i < WINDOWSIZE_WIDTH / 2; ++i)
 		m_p_Renderer->DrawSolidRect(i, 0, 0, 1, 1, 1, 1, 1, 0.0f);
@@ -148,10 +175,14 @@ void SceneMgr::DrawObjects() {
 	{
 		for (m_iter_bullet = m_BulletObj_List.begin(); m_iter_bullet != m_BulletObj_List.end(); ++m_iter_bullet)
 		{
-			m_p_Renderer->DrawSolidRect(
+			m_p_Renderer->DrawParticle
+			(
 				m_iter_bullet->getObjectPosition_X(), m_iter_bullet->getObjectPosition_Y(), m_iter_bullet->getObjectPosition_Z(),
 				m_iter_bullet->getObjectSize(),
-				m_iter_bullet->getObjectColor_R(), m_iter_bullet->getObjectColor_G(), m_iter_bullet->getObjectColor_B(), m_iter_bullet->getObjectColor_A(), m_iter_bullet->getRenderLevel());
+				m_iter_bullet->getObjectColor_R(), m_iter_bullet->getObjectColor_G(), m_iter_bullet->getObjectColor_B(), m_iter_bullet->getObjectColor_A(),
+				0, m_iter_bullet->getParticleDirY(),
+				m_iter_bullet->getTextureID(), getElapsedTime()
+			);
 		}
 	}
 
@@ -170,11 +201,22 @@ void SceneMgr::DrawObjects() {
 	{
 		for (m_iter_char = m_CharObj_List.begin(); m_iter_char != m_CharObj_List.end(); ++m_iter_char)
 		{
-			m_p_Renderer->DrawSolidRect(
+			// 캐릭터 animation
+			m_p_Renderer->DrawTexturedRectSeq
+			(
 				m_iter_char->getObjectPosition_X(), m_iter_char->getObjectPosition_Y(), m_iter_char->getObjectPosition_Z(),
 				m_iter_char->getObjectSize(),
-				m_iter_char->getObjectColor_R(), m_iter_char->getObjectColor_G(), m_iter_char->getObjectColor_B(), m_iter_char->getObjectColor_A(), m_iter_char->getRenderLevel());
-			
+				m_iter_char->getObjectColor_R(), m_iter_char->getObjectColor_G(), m_iter_char->getObjectColor_B(), m_iter_char->getObjectColor_A(),
+				m_iter_char->getTextureID(), m_iter_char->getAniCountX(), m_iter_char->getAniCountY(), m_iter_char->getMaxAniSizeX(), m_iter_char->getMaxAniSizeY(),
+				m_iter_char->getRenderLevel()
+			);
+
+			// animation 증가
+			m_iter_char->plusAniCountX(0.5f);
+			// animation 최대 수 도달 시 초기화
+			if (m_iter_char->getAniCountX() > m_iter_char->getMaxAniSizeX()) m_iter_char->setAniCountX(0);
+
+			// 라이프 게이지
 			m_p_Renderer->DrawSolidRectGauge(
 				m_iter_char->getObjectPosition_X(), m_iter_char->getObjectPosition_Y() + m_iter_char->getObjectSize() + 5.0f, m_iter_char->getObjectPosition_Z(),
 				m_iter_char->getObjectSize() + 20.0f, 10.0f,
@@ -350,7 +392,7 @@ void SceneMgr::UpdateObjects(float elapsedTime)
 		for (m_iter_building = m_BuildingObj_List.begin(); m_iter_building != m_BuildingObj_List.end(); ++m_iter_building)
 		{
 			m_iter_building->plusObjectCoolTime(elapsedTime / 1000.0f);
-			if (m_iter_building->getObjectCoolTime() >= 5.0f) // 10.0초 마다 총알 생성
+			if (m_iter_building->getObjectCoolTime() >= 2.0f) // 10.0초 마다 총알 생성
 			{
 				m_iter_building->setObjectCoolTime(0.0f);
 				BuildObjects(m_iter_building->getObjectPosition_X(), m_iter_building->getObjectPosition_Y(), m_iter_building->getObjectID(), OBJECT_BULLET);

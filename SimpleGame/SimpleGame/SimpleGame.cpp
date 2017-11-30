@@ -32,7 +32,7 @@ void RenderScene(void)
 
 
 	g_SceneMgr->UpdateObjects(elapsedTime);
-	g_SceneMgr->DrawObjects();
+	g_SceneMgr->DrawObjects(elapsedTime);
 
 	g_prevTime = currTime;
 

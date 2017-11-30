@@ -35,7 +35,14 @@ private:
 
 	int m_objectID;
 
+
 	GLuint m_textureID;
+	float m_aniCountX;
+	float m_aniCountY;
+	int m_maxAniSizeX;
+	int m_maxAniSizeY;
+
+	int m_ParticleDir;
 
 public:
 	Object();
@@ -109,6 +116,24 @@ public:
 	// Texture
 	void setTextureID(int id) { m_textureID = id; };
 	int getTextureID() { return m_textureID; };
+
+	void setAniCountX(int x) { m_aniCountX = x; };
+	void plusAniCountX(float x) { m_aniCountX += x; };
+	int getAniCountX() { return m_aniCountX; };
+
+	void setAniCountY(int y) { m_aniCountY = y; };
+	void plusAniCountY(float y) { m_aniCountY += y; };
+	int getAniCountY() { return m_aniCountY; };
+
+	void setMaxAniSizeX(int x) { m_maxAniSizeX = x; };
+	int getMaxAniSizeX() { return m_maxAniSizeX; };
+
+	void setMaxAniSizeY(int y) { m_maxAniSizeY = y; };
+	int getMaxAniSizeY() { return m_maxAniSizeY; };
+
+	void setParticleDirY(int y) { m_ParticleDir = y; };
+	int getParticleDirY() { return m_ParticleDir; };
+
 
 	// update()
 	void update(float elapsedTime);

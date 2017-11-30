@@ -41,7 +41,7 @@ private:
 
 	Renderer* m_p_Renderer;
 	
-	
+	GLuint m_BackgroundTextureID;
 
 	float m_time = 5.0f;
 	
@@ -50,7 +50,7 @@ public:
 	~SceneMgr();
 
 	void BuildObjects(float x, float y, int id, int type);
-	void DrawObjects();
+	void DrawObjects(float elapsedTime);
 	void ObjectsCollisionCheck();
 	void UpdateObjects(float elapsedTime);
 	void CheckDeadObject();

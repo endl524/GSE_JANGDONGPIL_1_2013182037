@@ -56,5 +56,4 @@ void Object::WallCollision() {
 // 업데이트 함수
 void Object::update(float elapsedTime) {
 	Move(elapsedTime);
-	//WallCollision();
 }
