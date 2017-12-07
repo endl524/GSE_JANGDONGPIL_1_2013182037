@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include "Object.h"
 #include "Renderer.h"
+#include "Sound.h"
 
 #define OBJECT_BUILDING 0
 #define OBJECT_CHARACTER 1
@@ -40,9 +41,13 @@ private:
 	list<Object>::iterator m_iter_char;
 
 	Renderer* m_p_Renderer;
-	
+	Sound* m_pSound;
+
+	GLuint m_BackgroundSound;
+
 	GLuint m_BackgroundTextureID;
 
+	bool m_is_StatusUI;
 	float m_time = 5.0f;
 	
 public:
@@ -55,10 +60,14 @@ public:
 	void UpdateObjects(float elapsedTime);
 	void CheckDeadObject();
 
+	bool GetIsStatusUI() { return m_is_StatusUI; };
+	void SetIsStatusUI(bool b) { m_is_StatusUI = b; };
 
 	void setElapsedTime(float t) { m_time = t; };
 	void plusElapsedTime(float t) { m_time += t; };
 	float getElapsedTime() { return m_time; };
+
+	void DrawStatusUI();
 
 	void DestroyObjects();
 };

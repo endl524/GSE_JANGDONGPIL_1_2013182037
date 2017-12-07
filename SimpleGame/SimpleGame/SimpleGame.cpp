@@ -33,7 +33,6 @@ void RenderScene(void)
 
 	g_SceneMgr->UpdateObjects(elapsedTime);
 	g_SceneMgr->DrawObjects(elapsedTime);
-
 	g_prevTime = currTime;
 
 	glutSwapBuffers();
@@ -50,18 +49,32 @@ void MouseInput(int button, int state, int x, int y)
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && coolTime >= 1.0f &&  WINDOWSIZE_HEIGHT / 2 - y < 0)
 	{
 		coolTime = 0.0f;
-		g_SceneMgr->BuildObjects(x - WINDOWSIZE_WIDTH/2, WINDOWSIZE_HEIGHT/2 - y, OBJECT_TEAM_2, OBJECT_CHARACTER);
+		g_SceneMgr->BuildObjects(x - WINDOWSIZE_WIDTH / 2, WINDOWSIZE_HEIGHT/ 2 - y, OBJECT_TEAM_2, OBJECT_CHARACTER);
 	}
 	RenderScene();
 }
 
 void KeyInput(unsigned char key, int x, int y)
 {
+	
 	RenderScene();
 }
 
 void SpecialKeyInput(int key, int x, int y)
 {
+	if (key == GLUT_KEY_CTRL_L)
+	{
+		g_SceneMgr->SetIsStatusUI(true);
+	}
+	RenderScene();
+}
+
+void SpecialKeyUp(int key, int x, int y)
+{
+	if (key == GLUT_KEY_CTRL_L)
+	{
+		g_SceneMgr->SetIsStatusUI(false);
+	}
 	RenderScene();
 }
 
@@ -89,16 +102,13 @@ int main(int argc, char **argv)
 	g_prevTime = timeGetTime();
 	cout << "\nScene Manager Loaded" << endl;
 
-	// default 건물 생성
-	g_SceneMgr->BuildObjects(-150.0f, 300.0f, OBJECT_TEAM_1, OBJECT_BUILDING);
-	g_SceneMgr->BuildObjects(-150.0f, -300.0f, OBJECT_TEAM_2, OBJECT_BUILDING);
-
 	//-------------------------------
 	glutDisplayFunc(RenderScene);
 	glutIdleFunc(Idle);
 	glutKeyboardFunc(KeyInput);
 	glutMouseFunc(MouseInput);
 	glutSpecialFunc(SpecialKeyInput);
+	glutSpecialUpFunc(SpecialKeyUp);
 	//-------------------------------
 
 	glutMainLoop();

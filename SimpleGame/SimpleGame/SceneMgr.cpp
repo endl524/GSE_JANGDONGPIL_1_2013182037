@@ -17,6 +17,12 @@ SceneMgr::SceneMgr()
 {
 	m_p_Renderer = new Renderer(WINDOWSIZE_WIDTH, WINDOWSIZE_HEIGHT);
 	m_BackgroundTextureID = m_p_Renderer->CreatePngTexture("./Resource/Background.png");
+	m_pSound = new Sound();
+	m_BackgroundSound = m_pSound->CreateSound("./Dependencies/SoundSamples/MF-W-90.XM");
+	m_pSound->PlaySound(m_BackgroundSound, true, 0.2f);
+	// default 건물 생성
+	BuildObjects(-150.0f, 300.0f, OBJECT_TEAM_1, OBJECT_BUILDING);
+	BuildObjects(-150.0f, -300.0f, OBJECT_TEAM_2, OBJECT_BUILDING);
 }
 
 
@@ -119,20 +125,20 @@ void SceneMgr::BuildObjects(float x, float y, int id, int type)
 					m_p_Object_Bullets->setObjectVelocityX(ur_randomVelocityX(dre));
 					m_p_Object_Bullets->setObjectVelocityY(-1.0f);
 				}
-				m_p_Object_Bullets->setTextureID(m_p_Renderer->CreatePngTexture("./Resource/Bullet.png"));
+				m_p_Object_Bullets->setTextureID(m_p_Renderer->CreatePngTexture("./Resource/Team1_Bullet.png"));
 				m_p_Object_Bullets->setParticleDirY(1); // 파티클 방향 설정
 			}
 
 			else if (id == OBJECT_TEAM_2)
 			{
-				m_p_Object_Bullets->setObjectInfo(x, y, 0.0f, 20.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.3f);
+				m_p_Object_Bullets->setObjectInfo(x, y, 0.0f, 20.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.3f);
 				m_p_Object_Bullets->setObjectVelocityX(ur_randomBullet_VelocityX(dre));
 				m_p_Object_Bullets->setObjectVelocityY(ur_randomT2VelocityY(dre));
 				if (m_p_Object_Bullets->getObjectVelocity().x == 0.0f && m_p_Object_Bullets->getObjectVelocity().y == 0.0f) {
 					m_p_Object_Bullets->setObjectVelocityX(ur_randomVelocityX(dre));
 					m_p_Object_Bullets->setObjectVelocityY(1.0f);
 				}
-				m_p_Object_Bullets->setTextureID(m_p_Renderer->CreatePngTexture("./Resource/Bullet.png"));
+				m_p_Object_Bullets->setTextureID(m_p_Renderer->CreatePngTexture("./Resource/Team2_Bullet.png"));
 				m_p_Object_Bullets->setParticleDirY(-1); // 파티클 방향 설정
 			}
 
@@ -162,14 +168,28 @@ void SceneMgr::BuildObjects(float x, float y, int id, int type)
 };
 
 
+void SceneMgr::DrawStatusUI()
+{
+	// UI 창
+	m_p_Renderer->DrawSolidRect(0.0f, 0.0f, 0.0f, 300.0f, 0.0f, 0.0f, 0.0f, 0.5f, 0.15f);
+
+	// 텍스트
+	m_p_Renderer->DrawText(-20.0f, 140.0f, GLUT_STROKE_ROMAN, 1.0f, 1.0f, 1.0f, "This is UI.");
+
+	// 텍스트
+	m_p_Renderer->DrawText(-80.0f, 120.0f, GLUT_STROKE_ROMAN, 1.0f, 1.0f, 1.0f, "Game Software Engineering Class");
+};
+
+
 void SceneMgr::DrawObjects(float elapsedTime) {
 	// 배경화면
 	m_p_Renderer->DrawTexturedRect(0.0f, 0.0f, 0.0f, 800.0f, 1.0f, 1.0f, 1.0f, 0.8f, m_BackgroundTextureID, 0.99f);
 
+	
 
 	// 중앙선
 	for (int i = -WINDOWSIZE_WIDTH / 2; i < WINDOWSIZE_WIDTH / 2; ++i)
-		m_p_Renderer->DrawSolidRect(i, 0, 0, 1, 1, 1, 1, 1, 0.0f);
+		m_p_Renderer->DrawSolidRect(i, 0, 0, 1, 1, 1, 1, 1, 0.98f);
 
 	if (!m_BulletObj_List.empty()) // 총알
 	{
@@ -180,7 +200,7 @@ void SceneMgr::DrawObjects(float elapsedTime) {
 				m_iter_bullet->getObjectPosition_X(), m_iter_bullet->getObjectPosition_Y(), m_iter_bullet->getObjectPosition_Z(),
 				m_iter_bullet->getObjectSize(),
 				m_iter_bullet->getObjectColor_R(), m_iter_bullet->getObjectColor_G(), m_iter_bullet->getObjectColor_B(), m_iter_bullet->getObjectColor_A(),
-				0, m_iter_bullet->getParticleDirY(),
+				0.0f, m_iter_bullet->getParticleDirY(),
 				m_iter_bullet->getTextureID(), getElapsedTime()
 			);
 		}
@@ -260,6 +280,12 @@ void SceneMgr::DrawObjects(float elapsedTime) {
 			}
 		}
 	}
+
+	// 상태 정보창 UI
+	if (GetIsStatusUI())
+		DrawStatusUI();
+	else m_p_Renderer->DrawText(0.0f, 0.0f, GLUT_STROKE_ROMAN, 1.0f, 1.0f, 1.0f, "If you push CTRL Key, UI will POP UP!");
+
 }
 
 

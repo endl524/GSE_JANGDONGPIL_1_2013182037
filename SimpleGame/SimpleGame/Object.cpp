@@ -43,11 +43,11 @@ Collider Object::getObjectCollider() {
 // 벽 충돌검사
 void Object::WallCollision() {
 	getObjectCollider();
-	if (m_objectCollider.maxX > WINDOWSIZE_WIDTH / 2 || m_objectCollider.minX < -WINDOWSIZE_WIDTH / 2)
+	if (m_objectCollider.maxX > WINDOWSIZE_WIDTH / 2 - 1 || m_objectCollider.minX < -WINDOWSIZE_WIDTH / 2 + 1 )
 	{
 		m_objectVelocity.x = -m_objectVelocity.x;
 	}
-	if (m_objectCollider.maxY > WINDOWSIZE_HEIGHT/2 || m_objectCollider.minY < -WINDOWSIZE_HEIGHT/2) 
+	if (m_objectCollider.maxY > WINDOWSIZE_HEIGHT / 2 - 1 || m_objectCollider.minY < -WINDOWSIZE_HEIGHT / 2 + 1) 
 	{
 		m_objectVelocity.y = -m_objectVelocity.y;
 	}
