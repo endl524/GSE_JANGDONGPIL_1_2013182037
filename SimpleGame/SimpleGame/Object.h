@@ -21,7 +21,7 @@ private:
 	float m_objectPosition_Z;
 	float m_objectSize;
 	float m_objectColor_R, m_objectColor_G, m_objectColor_B, m_objectColor_A; // 색상
-	Vector2D m_objectVelocity; // 속도벡터
+	Vector2D m_objectVelocity; // 방향벡터
 	Collider m_objectCollider;
 
 	float m_objectSpeed;
@@ -44,33 +44,38 @@ private:
 
 	int m_ParticleDir;
 
+
+	int m_ObjectType;
+	bool m_IsTargetting = false;
+	Vector2D m_TargetPos;
+
 public:
-	Object();
-	~Object();
+	Object() {};
+	~Object() {};
 
 	// setRectAngle
 	void setObjectInfo(float x, float y, float z, float size, float r, float g, float b, float a, float l);
 
 	// position
-	float getObjectPosition_X() { return m_objectPosition2D.x; };
+	float getObjectPosition_X() const { return m_objectPosition2D.x; };
 	void setObjectPosition_X(float x) { m_objectPosition2D.x = x; };
-	float getObjectPosition_Y() { return m_objectPosition2D.y; };
+	float getObjectPosition_Y() const { return m_objectPosition2D.y; };
 	void setObjectPosition_Y(float y) { m_objectPosition2D.y = y; };
-	float getObjectPosition_Z() { return m_objectPosition_Z; };
+	float getObjectPosition_Z() const { return m_objectPosition_Z; };
 	void setObjectPosition_Z(float z) { m_objectPosition_Z = z; };
 
 	// size
-	float getObjectSize() { return m_objectSize; };
+	float getObjectSize() const { return m_objectSize; };
 	void setObjectSize(float size) { m_objectSize = size; };
 
 	// color
-	float getObjectColor_R() { return m_objectColor_R; };
+	float getObjectColor_R() const { return m_objectColor_R; };
 	void setObjectColor_R(float r) { m_objectColor_R = r; };
-	float getObjectColor_G() { return m_objectColor_G; };
+	float getObjectColor_G() const { return m_objectColor_G; };
 	void setObjectColor_G(float g) { m_objectColor_G = g; };
-	float getObjectColor_B() { return m_objectColor_B; };
+	float getObjectColor_B() const { return m_objectColor_B; };
 	void setObjectColor_B(float b) { m_objectColor_B = b; };
-	float getObjectColor_A() { return m_objectColor_A; };
+	float getObjectColor_A() const { return m_objectColor_A; };
 	void setObjectColor_A(float a) { m_objectColor_A = a; };
 
 	// Velocity
@@ -79,7 +84,7 @@ public:
 	void setObjectVelocityY(float y) { m_objectVelocity.y = y; };
 	void Move(float elapsedTime);
 	void setObjectSpeed(float s) { m_objectSpeed = s; };
-	float getObjectSpeed() { return m_objectSpeed; };
+	float getObjectSpeed() const { return m_objectSpeed; };
 
 	// Collision
 	Collider getObjectCollider();
@@ -94,48 +99,71 @@ public:
 	void damageObjcetLife(float l) { m_objectLife += l; if (m_objectLife <= 0.0f) m_objectIsDead = true; };
 
 	void setObjcetLife(float l) { m_objectLife = l;};
-	float getObjectLife() { return m_objectLife; };
-	bool getObjectIsDead() { return m_objectIsDead; };
+	float getObjectLife() const { return m_objectLife; };
+	bool getObjectIsDead() const { return m_objectIsDead; };
 	void setObjectIsDead(bool d) { m_objectIsDead = d; };
 
 
 	// CoolTime
 	void setObjectCoolTime(float ct) { m_objectCoolTime = ct; };
 	void plusObjectCoolTime(float ct) { m_objectCoolTime += ct; };
-	float getObjectCoolTime() { return m_objectCoolTime; };
+	float getObjectCoolTime() const { return m_objectCoolTime; };
 
 	// render level
 	void setRenderLevel(float l) { m_renderLevel = l; };
-	float getRenderLevel() { return m_renderLevel; };
+	float getRenderLevel() const { return m_renderLevel; };
 
 	// ID
 	void setObjectID(int id) { m_objectID = id; };
-	int getObjectID() { return m_objectID; };
+	int getObjectID() const { return m_objectID; };
 
 
 	// Texture
 	void setTextureID(int id) { m_textureID = id; };
-	int getTextureID() { return m_textureID; };
+	int getTextureID() const { return m_textureID; };
 
 	void setAniCountX(int x) { m_aniCountX = x; };
 	void plusAniCountX(float x) { m_aniCountX += x; };
-	int getAniCountX() { return m_aniCountX; };
+	int getAniCountX() const { return m_aniCountX; };
 
 	void setAniCountY(int y) { m_aniCountY = y; };
 	void plusAniCountY(float y) { m_aniCountY += y; };
-	int getAniCountY() { return m_aniCountY; };
+	int getAniCountY() const { return m_aniCountY; };
 
 	void setMaxAniSizeX(int x) { m_maxAniSizeX = x; };
-	int getMaxAniSizeX() { return m_maxAniSizeX; };
+	int getMaxAniSizeX() const { return m_maxAniSizeX; };
 
 	void setMaxAniSizeY(int y) { m_maxAniSizeY = y; };
-	int getMaxAniSizeY() { return m_maxAniSizeY; };
+	int getMaxAniSizeY() const { return m_maxAniSizeY; };
 
 	void setParticleDirY(int y) { m_ParticleDir = y; };
-	int getParticleDirY() { return m_ParticleDir; };
+	int getParticleDirY() const { return m_ParticleDir; };
+
+
+
+	// AI ======
+	int GetObjectType() const { return m_ObjectType; };
+	void SetObjectType(int type) { m_ObjectType = type; };
+
+	bool GetIsTargetting() const { return m_IsTargetting; };
+
+	Vector2D GetTargetPos() { return m_TargetPos; };
+
+	// 오브젝트를 향한 정규화된 방향벡터 구하기
+	Vector2D GetDirectionVector(Vector2D pObjectPos);
+
+	// 타겟(위치) 받기
+	void SetTarget(list<Object>* pTargetlist);
+
+	// 타겟(위치)으로 이동하기
+	void SetDir_ToTarget();
+
+	// 타겟에 도착했다면
+	void IsArrived();
+
+	// ========
 
 
 	// update()
 	void update(float elapsedTime);
 };
-

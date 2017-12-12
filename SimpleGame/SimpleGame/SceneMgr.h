@@ -4,12 +4,17 @@
 #include "Renderer.h"
 #include "Sound.h"
 
+
 #define OBJECT_BUILDING 0
 #define OBJECT_CHARACTER 1
 #define OBJECT_BULLET 2
 #define OBJECT_ARROW 3
 #define OBJECT_TEAM_1 4
 #define OBJECT_TEAM_2 5
+
+#define UNITTYPE_NORMAL 101
+#define UNITTYPE_SIEGE 102
+#define UNITTYPE_FLYING 103
 
 #define MAX_BULLET_COUNT 100
 #define MAX_ARROW_COUNT 100

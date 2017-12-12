@@ -394,6 +394,9 @@ void SceneMgr::UpdateObjects(float elapsedTime)
 		for (m_iter_char = m_CharObj_List.begin(); m_iter_char != m_CharObj_List.end(); ++m_iter_char)
 		{
 			m_iter_char->plusObjectCoolTime(elapsedTime / 1000.0f);
+			if (!m_iter_char->GetIsTargetting())
+				m_iter_char->SetTarget(&m_BuildingObj_List);
+			else m_iter_char->IsArrived();
 			m_iter_char->update(elapsedTime);
 			m_iter_char->WallCollision();
 			if (m_iter_char->getObjectCoolTime() >= 1.0f) // 3.0초 마다 화살 생성
