@@ -12,6 +12,9 @@ uniform_real_distribution<> ur_randomBullet_VelocityX(-0.5f, 0.5f);
 uniform_real_distribution<> ur_randomPosX(-WINDOWSIZE_WIDTH / 2.0f + 10.0f, WINDOWSIZE_WIDTH / 2.0f - 10.0f);
 uniform_real_distribution<> ur_randomPosY(0.0f, WINDOWSIZE_HEIGHT / 2.0f - 10.0f);
 
+// 랜덤 유닛 생성
+uniform_real_distribution<> ur_randomUnit(0.0f, 1.0f);
+
 // 렌더러와 오브젝트들 생성
 SceneMgr::SceneMgr()
 {
@@ -68,18 +71,21 @@ void SceneMgr::BuildObjects(float x, float y, int id, int type)
 				m_p_Object_Char->setObjectVelocityX(ur_randomVelocityX(dre));
 				m_p_Object_Char->setObjectVelocityY(-1.0f);
 			}
-			m_p_Object_Char->setObjcetLife(10.0f);
-			m_p_Object_Char->setObjectSpeed(300.0f);
 			m_p_Object_Char->setObjectID(id);
-
-			m_p_Object_Char->setTextureID(m_p_Renderer->CreatePngTexture("./Resource/Team1_Char.png"));
+			m_p_Object_Char->setObjcetLife(10.0f);
+			m_p_Object_Char->setObjectSpeed(150.0f);
 
 			m_p_Object_Char->setAniCountX(0);
 			m_p_Object_Char->setAniCountY(0);
 
 			m_p_Object_Char->setMaxAniSizeX(10);
 			m_p_Object_Char->setMaxAniSizeY(1);
+			m_p_Object_Char->setTextureID(m_p_Renderer->CreatePngTexture("./Resource/Team1_Char.png"));
 
+			if (ur_randomUnit(dre) > 0.4f)
+				m_p_Object_Char->SetObjectType(UNITTYPE_NORMAL); // 일반 유닛
+			else
+				m_p_Object_Char->SetObjectType(UNITTYPE_SIEGE); // 공성 유닛
 			m_CharObj_List.push_back(*m_p_Object_Char);
 		}
 
@@ -94,21 +100,25 @@ void SceneMgr::BuildObjects(float x, float y, int id, int type)
 				m_p_Object_Char->setObjectVelocityX(ur_randomVelocityX(dre));
 				m_p_Object_Char->setObjectVelocityY(1.0f);
 			}
-			m_p_Object_Char->setObjcetLife(10.0f);
-			m_p_Object_Char->setObjectSpeed(300.0f);
 			m_p_Object_Char->setObjectID(id);
-
-			m_p_Object_Char->setTextureID(m_p_Renderer->CreatePngTexture("./Resource/Team2_Char.png"));
+			m_p_Object_Char->setObjcetLife(10.0f);
+			m_p_Object_Char->setObjectSpeed(150.0f);
 
 			m_p_Object_Char->setAniCountX(0);
 			m_p_Object_Char->setAniCountY(0);
 
 			m_p_Object_Char->setMaxAniSizeX(10);
 			m_p_Object_Char->setMaxAniSizeY(1);
+			m_p_Object_Char->setTextureID(m_p_Renderer->CreatePngTexture("./Resource/Team2_Char.png"));
 
+			if (ur_randomUnit(dre) > 0.4f)
+				m_p_Object_Char->SetObjectType(UNITTYPE_NORMAL); // 일반 유닛
+			else
+				m_p_Object_Char->SetObjectType(UNITTYPE_SIEGE); // 공성 유닛
 			m_CharObj_List.push_back(*m_p_Object_Char);
 		}
 
+		
 		break;
 
 	case OBJECT_BULLET:
@@ -116,35 +126,45 @@ void SceneMgr::BuildObjects(float x, float y, int id, int type)
 		{
 			++m_curBulletCount;
 			m_p_Object_Bullets = new Object();
+
+			m_p_Object_Bullets->setObjectInfo(x, y, 0.0f, 20.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.3f);
+			m_p_Object_Bullets->setObjcetLife(20.0f);
+			m_p_Object_Bullets->setObjectSpeed(600.0f);
+			m_p_Object_Bullets->setObjectID(id);
+			m_p_Object_Bullets->SetTarget(&m_BuildingObj_List);
+			m_p_Object_Bullets->SetDir_ToTarget();
+
 			if (id == OBJECT_TEAM_1)
 			{
-				m_p_Object_Bullets->setObjectInfo(x, y, 0.0f, 20.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.3f);
-				m_p_Object_Bullets->setObjectVelocityX(ur_randomBullet_VelocityX(dre));
-				m_p_Object_Bullets->setObjectVelocityY(ur_randomT1VelocityY(dre));
-				if (m_p_Object_Bullets->getObjectVelocity().x == 0.0f && m_p_Object_Bullets->getObjectVelocity().y == 0.0f) {
-					m_p_Object_Bullets->setObjectVelocityX(ur_randomVelocityX(dre));
-					m_p_Object_Bullets->setObjectVelocityY(-1.0f);
+				if (!m_p_Object_Bullets->GetIsTargetting())
+				{
+					m_p_Object_Bullets->setObjectVelocityX(ur_randomBullet_VelocityX(dre));
+					m_p_Object_Bullets->setObjectVelocityY(ur_randomT1VelocityY(dre));
+					if (m_p_Object_Bullets->getObjectVelocity().x == 0.0f && m_p_Object_Bullets->getObjectVelocity().y == 0.0f) {
+						m_p_Object_Bullets->setObjectVelocityX(ur_randomVelocityX(dre));
+						m_p_Object_Bullets->setObjectVelocityY(-1.0f);
+					}
 				}
+				
 				m_p_Object_Bullets->setTextureID(m_p_Renderer->CreatePngTexture("./Resource/Team1_Bullet.png"));
 				m_p_Object_Bullets->setParticleDirY(1); // 파티클 방향 설정
 			}
 
 			else if (id == OBJECT_TEAM_2)
 			{
-				m_p_Object_Bullets->setObjectInfo(x, y, 0.0f, 20.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.3f);
-				m_p_Object_Bullets->setObjectVelocityX(ur_randomBullet_VelocityX(dre));
-				m_p_Object_Bullets->setObjectVelocityY(ur_randomT2VelocityY(dre));
-				if (m_p_Object_Bullets->getObjectVelocity().x == 0.0f && m_p_Object_Bullets->getObjectVelocity().y == 0.0f) {
-					m_p_Object_Bullets->setObjectVelocityX(ur_randomVelocityX(dre));
-					m_p_Object_Bullets->setObjectVelocityY(1.0f);
+				if (!m_p_Object_Bullets->GetIsTargetting())
+				{
+					m_p_Object_Bullets->setObjectVelocityX(ur_randomBullet_VelocityX(dre));
+					m_p_Object_Bullets->setObjectVelocityY(ur_randomT2VelocityY(dre));
+					if (m_p_Object_Bullets->getObjectVelocity().x == 0.0f && m_p_Object_Bullets->getObjectVelocity().y == 0.0f) {
+						m_p_Object_Bullets->setObjectVelocityX(ur_randomVelocityX(dre));
+						m_p_Object_Bullets->setObjectVelocityY(1.0f);
+					}
 				}
+
 				m_p_Object_Bullets->setTextureID(m_p_Renderer->CreatePngTexture("./Resource/Team2_Bullet.png"));
 				m_p_Object_Bullets->setParticleDirY(-1); // 파티클 방향 설정
 			}
-
-			m_p_Object_Bullets->setObjcetLife(20.0f);
-			m_p_Object_Bullets->setObjectSpeed(600.0f);
-			m_p_Object_Bullets->setObjectID(id);
 
 			m_BulletObj_List.push_back(*m_p_Object_Bullets);
 		}
@@ -376,7 +396,7 @@ void SceneMgr::UpdateObjects(float elapsedTime)
 {
 	// 북쪽 진영 캐릭터 생성
 	plusElapsedTime(elapsedTime / 1000.0f);
-	if (getElapsedTime() >= 2.0f) // 5.0초 마다 Team1 캐릭터 생성
+	if (getElapsedTime() >= 0.5f) // 0.5초 마다 Team1 캐릭터 생성
 	{
 		setElapsedTime(0.0f);
 		BuildObjects
@@ -394,12 +414,24 @@ void SceneMgr::UpdateObjects(float elapsedTime)
 		for (m_iter_char = m_CharObj_List.begin(); m_iter_char != m_CharObj_List.end(); ++m_iter_char)
 		{
 			m_iter_char->plusObjectCoolTime(elapsedTime / 1000.0f);
-			if (!m_iter_char->GetIsTargetting())
+
+			if (m_iter_char->GetObjectType() == UNITTYPE_NORMAL)
+			{
+				// 일반 유닛은 상대 유닛을 타겟으로 한다.
+				m_iter_char->SetTarget(&m_CharObj_List);
+				// 상대유닛을 찾지 못했다면 건물을 타겟으로 한다.
+				if (!m_iter_char->GetIsTargetting())
+					m_iter_char->SetTarget(&m_BuildingObj_List);
+			}
+
+			else if (m_iter_char->GetObjectType() == UNITTYPE_SIEGE)
+				// 공성유닛은 건물을 타겟으로한다.
 				m_iter_char->SetTarget(&m_BuildingObj_List);
-			else m_iter_char->IsArrived();
+
+			m_iter_char->IsArrived();
 			m_iter_char->update(elapsedTime);
 			m_iter_char->WallCollision();
-			if (m_iter_char->getObjectCoolTime() >= 1.0f) // 3.0초 마다 화살 생성
+			if (m_iter_char->getObjectCoolTime() >= 1.0f) // 1.0초 마다 화살 생성
 			{
 				m_iter_char->setObjectCoolTime(0.0f);
 				BuildObjects
@@ -421,7 +453,7 @@ void SceneMgr::UpdateObjects(float elapsedTime)
 		for (m_iter_building = m_BuildingObj_List.begin(); m_iter_building != m_BuildingObj_List.end(); ++m_iter_building)
 		{
 			m_iter_building->plusObjectCoolTime(elapsedTime / 1000.0f);
-			if (m_iter_building->getObjectCoolTime() >= 2.0f) // 10.0초 마다 총알 생성
+			if (m_iter_building->getObjectCoolTime() >= 2.0f) // 2.0초 마다 총알 생성
 			{
 				m_iter_building->setObjectCoolTime(0.0f);
 				BuildObjects(m_iter_building->getObjectPosition_X(), m_iter_building->getObjectPosition_Y(), m_iter_building->getObjectID(), OBJECT_BULLET);
@@ -540,5 +572,4 @@ void SceneMgr::DestroyObjects()
 	{
 		m_BulletObj_List.erase(m_BulletObj_List.begin(), m_BulletObj_List.end());
 	}
-	
 }

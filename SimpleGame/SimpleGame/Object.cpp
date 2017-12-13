@@ -121,10 +121,10 @@ void Object::IsArrived()
 	{
 		// 캐릭터가 타겟에 도달했다면 타겟팅을 취소.
 		// = 새로운 타겟을 받아오도록 한다.
-		// 타겟 위치는 오차범위 +-10.
-		if (m_objectPosition2D.x >= m_TargetPos.x - 10 && m_objectPosition2D.x <= m_TargetPos.x + 10
+		// 타겟 위치는 오차범위 +-20.
+		if (m_objectPosition2D.x >= m_TargetPos.x - 20 && m_objectPosition2D.x <= m_TargetPos.x + 20
 			&&
-			m_objectPosition2D.y >= m_TargetPos.y - 10 && m_objectPosition2D.y <= m_TargetPos.y + 10)
+			m_objectPosition2D.y >= m_TargetPos.y - 20 && m_objectPosition2D.y <= m_TargetPos.y + 20)
 		{
 			m_IsTargetting = false;
 		}

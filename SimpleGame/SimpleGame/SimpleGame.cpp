@@ -18,7 +18,7 @@ but WITHOUT ANY WARRANTY.
 float g_prevTime = 0.0f;
 float currTime = 0.0f;
 float elapsedTime = 0.0f;
-float coolTime = 7.0f;
+float coolTime = 1.0f;
 SceneMgr* g_SceneMgr = NULL;
 
 void RenderScene(void)
@@ -46,7 +46,7 @@ void Idle(void)
 void MouseInput(int button, int state, int x, int y)
 {
 	// 클릭 시 해당 위치에 캐릭터 생성
-	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && coolTime >= 1.0f &&  WINDOWSIZE_HEIGHT / 2 - y < 0)
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && coolTime >= 0.5f &&  WINDOWSIZE_HEIGHT / 2 - y < 0)
 	{
 		coolTime = 0.0f;
 		g_SceneMgr->BuildObjects(x - WINDOWSIZE_WIDTH / 2, WINDOWSIZE_HEIGHT/ 2 - y, OBJECT_TEAM_2, OBJECT_CHARACTER);
