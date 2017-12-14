@@ -42,8 +42,8 @@ private:
 	int m_maxAniSizeX;
 	int m_maxAniSizeY;
 
-	int m_ParticleDir;
-
+	float m_ParticleDir;
+	float m_particleTimer = 0.0f;
 
 	int m_ObjectType;
 	bool m_IsTargetting = false;
@@ -136,10 +136,11 @@ public:
 	void setMaxAniSizeY(int y) { m_maxAniSizeY = y; };
 	int getMaxAniSizeY() const { return m_maxAniSizeY; };
 
-	void setParticleDirY(int y) { m_ParticleDir = y; };
-	int getParticleDirY() const { return m_ParticleDir; };
+	void setParticleDirY(float y) { m_ParticleDir = y; };
+	float getParticleDirY() const { return m_ParticleDir; };
 
-
+	void SetParticleTimer(float t) { m_particleTimer = t; };
+	float GetParticleTimer() { return m_particleTimer; };
 
 	// AI ======
 	int GetObjectType() const { return m_ObjectType; };

@@ -16,8 +16,8 @@
 #define UNITTYPE_SIEGE 102
 #define UNITTYPE_FLYING 103
 
-#define MAX_BULLET_COUNT 100
-#define MAX_ARROW_COUNT 100
+#define MAX_BULLET_COUNT 20
+#define MAX_ARROW_COUNT 50
 #define MAX_CHARACTER_COUNT 10
 
 class SceneMgr
@@ -51,6 +51,21 @@ private:
 	GLuint m_BackgroundSound;
 
 	GLuint m_BackgroundTextureID;
+	GLuint m_Climate_Rain_TextureID;
+	GLuint m_Team1_Bullet_TextureID;
+	GLuint m_Team2_Bullet_TextureID;
+	GLuint m_Team1_Arrow_TextureID;
+	GLuint m_Team2_Arrow_TextureID;
+	GLuint m_Team1_NormalUnit_TextureID;
+	GLuint m_Team2_NormalUnit_TextureID;
+	GLuint m_Team1_SiegeUnit_TextureID;
+	GLuint m_Team2_SiegeUnit_TextureID;
+	GLuint m_Team1_MasterBuilding_TextureID;
+	GLuint m_Team2_MasterBuilding_TextureID;
+	GLuint m_Team1_SubBuilding_TextureID;
+	GLuint m_Team2_SubBuilding_TextureID;
+
+	float m_Climate_Timer = 0.0f;
 
 	bool m_is_StatusUI;
 	float m_time = 5.0f;

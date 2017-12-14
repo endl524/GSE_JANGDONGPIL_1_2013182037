@@ -20,6 +20,23 @@ SceneMgr::SceneMgr()
 {
 	m_p_Renderer = new Renderer(WINDOWSIZE_WIDTH, WINDOWSIZE_HEIGHT);
 	m_BackgroundTextureID = m_p_Renderer->CreatePngTexture("./Resource/Background.png");
+	m_Climate_Rain_TextureID = m_p_Renderer->CreatePngTexture("./Resource/Climate_Rain.png");
+
+	m_Team1_Bullet_TextureID = m_p_Renderer->CreatePngTexture("./Resource/Team1_Bullet.png");
+	m_Team2_Bullet_TextureID = m_p_Renderer->CreatePngTexture("./Resource/Team2_Bullet.png");
+
+	m_Team1_Arrow_TextureID = m_p_Renderer->CreatePngTexture("./Resource/Team1_Normal_Arrow.png");
+	m_Team2_Arrow_TextureID = m_p_Renderer->CreatePngTexture("./Resource/Team2_Normal_Arrow.png");
+
+	m_Team1_NormalUnit_TextureID = m_p_Renderer->CreatePngTexture("./Resource/Team1_NormalUnit.png");
+	m_Team2_NormalUnit_TextureID = m_p_Renderer->CreatePngTexture("./Resource/Team2_NormalUnit.png");
+	m_Team1_SiegeUnit_TextureID = m_p_Renderer->CreatePngTexture("./Resource/Team1_SiegeUnit.png");
+	m_Team2_SiegeUnit_TextureID = m_p_Renderer->CreatePngTexture("./Resource/Team2_SiegeUnit.png");
+	m_Team1_MasterBuilding_TextureID = m_p_Renderer->CreatePngTexture("./Resource/Team1_MasterBuilding.png");
+	m_Team2_MasterBuilding_TextureID = m_p_Renderer->CreatePngTexture("./Resource/Team2_MasterBuilding.png");
+	m_Team1_SubBuilding_TextureID = m_p_Renderer->CreatePngTexture("./Resource/Team1_SubBuilding.png");
+	m_Team2_SubBuilding_TextureID = m_p_Renderer->CreatePngTexture("./Resource/Team2_SubBuilding.png");
+
 	m_pSound = new Sound();
 	m_BackgroundSound = m_pSound->CreateSound("./Dependencies/SoundSamples/MF-W-90.XM");
 	m_pSound->PlaySound(m_BackgroundSound, true, 0.2f);
@@ -49,11 +66,28 @@ void SceneMgr::BuildObjects(float x, float y, int id, int type)
 			m_p_Object_Building->setObjcetLife(500.0f);
 			m_p_Object_Building->setObjectSpeed(0.0f);
 			m_p_Object_Building->setObjectID(id);
-			if (id == OBJECT_TEAM_1)
-				m_p_Object_Building->setTextureID(m_p_Renderer->CreatePngTexture("./Resource/Pig.png"));
-			else if (id == OBJECT_TEAM_2)
-				m_p_Object_Building->setTextureID(m_p_Renderer->CreatePngTexture("./Resource/AngryBird.png"));
+			if (i == 1)
+			{
+				if (id == OBJECT_TEAM_1)
+				{
+					m_p_Object_Building->setObjectPosition_Y(y + 20.0f);
+					m_p_Object_Building->setTextureID(m_Team1_MasterBuilding_TextureID);
+				}
+				else if (id == OBJECT_TEAM_2)
+				{
+					m_p_Object_Building->setObjectPosition_Y(y - 20.0f);
+					m_p_Object_Building->setTextureID(m_Team2_MasterBuilding_TextureID);
+				}
+			}
 
+			else
+			{
+				m_p_Object_Building->setObjectSize(70.0f);
+				if (id == OBJECT_TEAM_1)
+					m_p_Object_Building->setTextureID(m_Team1_SubBuilding_TextureID);
+				else if (id == OBJECT_TEAM_2)
+					m_p_Object_Building->setTextureID(m_Team2_SubBuilding_TextureID);
+			}
 			m_BuildingObj_List.push_back(*m_p_Object_Building);
 		}
 
@@ -73,19 +107,27 @@ void SceneMgr::BuildObjects(float x, float y, int id, int type)
 			}
 			m_p_Object_Char->setObjectID(id);
 			m_p_Object_Char->setObjcetLife(10.0f);
-			m_p_Object_Char->setObjectSpeed(150.0f);
 
 			m_p_Object_Char->setAniCountX(0);
 			m_p_Object_Char->setAniCountY(0);
 
-			m_p_Object_Char->setMaxAniSizeX(10);
-			m_p_Object_Char->setMaxAniSizeY(1);
-			m_p_Object_Char->setTextureID(m_p_Renderer->CreatePngTexture("./Resource/Team1_Char.png"));
-
 			if (ur_randomUnit(dre) > 0.4f)
+			{
 				m_p_Object_Char->SetObjectType(UNITTYPE_NORMAL); // 일반 유닛
+				m_p_Object_Char->setObjectSpeed(150.0f);
+				m_p_Object_Char->setMaxAniSizeX(10);
+				m_p_Object_Char->setMaxAniSizeY(1);
+				m_p_Object_Char->setTextureID(m_Team1_NormalUnit_TextureID);
+			}
 			else
+			{
 				m_p_Object_Char->SetObjectType(UNITTYPE_SIEGE); // 공성 유닛
+				m_p_Object_Char->setObjectSpeed(100.0f);
+				m_p_Object_Char->setMaxAniSizeX(1);
+				m_p_Object_Char->setMaxAniSizeY(1);
+				m_p_Object_Char->setTextureID(m_Team1_SiegeUnit_TextureID);
+			}
+
 			m_CharObj_List.push_back(*m_p_Object_Char);
 		}
 
@@ -102,19 +144,27 @@ void SceneMgr::BuildObjects(float x, float y, int id, int type)
 			}
 			m_p_Object_Char->setObjectID(id);
 			m_p_Object_Char->setObjcetLife(10.0f);
-			m_p_Object_Char->setObjectSpeed(150.0f);
 
 			m_p_Object_Char->setAniCountX(0);
 			m_p_Object_Char->setAniCountY(0);
 
-			m_p_Object_Char->setMaxAniSizeX(10);
-			m_p_Object_Char->setMaxAniSizeY(1);
-			m_p_Object_Char->setTextureID(m_p_Renderer->CreatePngTexture("./Resource/Team2_Char.png"));
-
 			if (ur_randomUnit(dre) > 0.4f)
+			{
 				m_p_Object_Char->SetObjectType(UNITTYPE_NORMAL); // 일반 유닛
+				m_p_Object_Char->setObjectSpeed(150.0f);
+				m_p_Object_Char->setMaxAniSizeX(10);
+				m_p_Object_Char->setMaxAniSizeY(1);
+				m_p_Object_Char->setTextureID(m_Team2_NormalUnit_TextureID);
+			}
 			else
+			{
 				m_p_Object_Char->SetObjectType(UNITTYPE_SIEGE); // 공성 유닛
+				m_p_Object_Char->setObjectSpeed(100.0f);
+				m_p_Object_Char->setMaxAniSizeX(1);
+				m_p_Object_Char->setMaxAniSizeY(1);
+				m_p_Object_Char->setTextureID(m_Team2_SiegeUnit_TextureID);
+			}
+
 			m_CharObj_List.push_back(*m_p_Object_Char);
 		}
 
@@ -133,6 +183,7 @@ void SceneMgr::BuildObjects(float x, float y, int id, int type)
 			m_p_Object_Bullets->setObjectID(id);
 			m_p_Object_Bullets->SetTarget(&m_BuildingObj_List);
 			m_p_Object_Bullets->SetDir_ToTarget();
+			m_p_Object_Bullets->SetParticleTimer(0);
 
 			if (id == OBJECT_TEAM_1)
 			{
@@ -146,8 +197,8 @@ void SceneMgr::BuildObjects(float x, float y, int id, int type)
 					}
 				}
 				
-				m_p_Object_Bullets->setTextureID(m_p_Renderer->CreatePngTexture("./Resource/Team1_Bullet.png"));
-				m_p_Object_Bullets->setParticleDirY(1); // 파티클 방향 설정
+				m_p_Object_Bullets->setTextureID(m_Team1_Bullet_TextureID);
+				m_p_Object_Bullets->setParticleDirY(1.0f); // 파티클 방향 설정
 			}
 
 			else if (id == OBJECT_TEAM_2)
@@ -162,8 +213,8 @@ void SceneMgr::BuildObjects(float x, float y, int id, int type)
 					}
 				}
 
-				m_p_Object_Bullets->setTextureID(m_p_Renderer->CreatePngTexture("./Resource/Team2_Bullet.png"));
-				m_p_Object_Bullets->setParticleDirY(-1); // 파티클 방향 설정
+				m_p_Object_Bullets->setTextureID(m_Team2_Bullet_TextureID);
+				m_p_Object_Bullets->setParticleDirY(-1.0f); // 파티클 방향 설정
 			}
 
 			m_BulletObj_List.push_back(*m_p_Object_Bullets);
@@ -175,11 +226,19 @@ void SceneMgr::BuildObjects(float x, float y, int id, int type)
 		{
 			++m_curArrowCount;
 			m_p_Object_Arrows = new Object();
-			if (id == OBJECT_TEAM_1) m_p_Object_Arrows->setObjectInfo(x, y, 0.0f, 2.0f, 0.5f, 0.2f, 0.7f, 1.0f, 0.3f);
-			else if (id == OBJECT_TEAM_2) m_p_Object_Arrows->setObjectInfo(x, y, 0.0f, 2.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.3f);
+			m_p_Object_Arrows->setObjectInfo(x, y, 0.0f, 20.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.3f);
+			if (id == OBJECT_TEAM_1)
+			{
+				m_p_Object_Arrows->setTextureID(m_Team1_Arrow_TextureID);
+			}
+			else if (id == OBJECT_TEAM_2)
+			{
+				m_p_Object_Arrows->setTextureID(m_Team2_Arrow_TextureID);
+			}
 			m_p_Object_Arrows->setObjcetLife(10.0f);
-			m_p_Object_Arrows->setObjectSpeed(100.0f);
+			m_p_Object_Arrows->setObjectSpeed(200.0f);
 			m_p_Object_Arrows->setObjectID(id);
+			
 
 			m_ArrowObj_List.push_back(*m_p_Object_Arrows);
 		}
@@ -205,7 +264,6 @@ void SceneMgr::DrawObjects(float elapsedTime) {
 	// 배경화면
 	m_p_Renderer->DrawTexturedRect(0.0f, 0.0f, 0.0f, 800.0f, 1.0f, 1.0f, 1.0f, 0.8f, m_BackgroundTextureID, 0.99f);
 
-	
 
 	// 중앙선
 	for (int i = -WINDOWSIZE_WIDTH / 2; i < WINDOWSIZE_WIDTH / 2; ++i)
@@ -221,8 +279,10 @@ void SceneMgr::DrawObjects(float elapsedTime) {
 				m_iter_bullet->getObjectSize(),
 				m_iter_bullet->getObjectColor_R(), m_iter_bullet->getObjectColor_G(), m_iter_bullet->getObjectColor_B(), m_iter_bullet->getObjectColor_A(),
 				0.0f, m_iter_bullet->getParticleDirY(),
-				m_iter_bullet->getTextureID(), getElapsedTime()
+				m_iter_bullet->getTextureID(), m_iter_bullet->GetParticleTimer(),
+				m_iter_bullet->getRenderLevel()
 			);
+			m_iter_bullet->SetParticleTimer(m_iter_bullet->GetParticleTimer() + getElapsedTime());
 		}
 	}
 
@@ -230,10 +290,14 @@ void SceneMgr::DrawObjects(float elapsedTime) {
 	{
 		for (m_iter_arrow = m_ArrowObj_List.begin(); m_iter_arrow != m_ArrowObj_List.end(); ++m_iter_arrow)
 		{
-			m_p_Renderer->DrawSolidRect(
+			m_p_Renderer->DrawTexturedRect
+			(
 				m_iter_arrow->getObjectPosition_X(), m_iter_arrow->getObjectPosition_Y(), m_iter_arrow->getObjectPosition_Z(),
 				m_iter_arrow->getObjectSize(),
-				m_iter_arrow->getObjectColor_R(), m_iter_arrow->getObjectColor_G(), m_iter_arrow->getObjectColor_B(), m_iter_arrow->getObjectColor_A(), m_iter_arrow->getRenderLevel());
+				m_iter_arrow->getObjectColor_R(), m_iter_arrow->getObjectColor_G(), m_iter_arrow->getObjectColor_B(), m_iter_arrow->getObjectColor_A(),
+				m_iter_arrow->getTextureID(),
+				m_iter_arrow->getRenderLevel()
+			);
 		}
 	}
 
@@ -306,6 +370,11 @@ void SceneMgr::DrawObjects(float elapsedTime) {
 		DrawStatusUI();
 	else m_p_Renderer->DrawText(0.0f, 0.0f, GLUT_STROKE_ROMAN, 1.0f, 1.0f, 1.0f, "If you push CTRL Key, UI will POP UP!");
 
+	// 날씨효과
+	m_p_Renderer->DrawParticleClimate(0, 0, 0, 1, 1, 1, 1, 1, -0.1, -0.5f, m_Climate_Rain_TextureID, m_Climate_Timer, 0.01);
+	m_Climate_Timer += elapsedTime / 1000.0f;
+	if (m_Climate_Timer > 30.0f)
+		m_Climate_Timer = 0.0f;
 }
 
 
@@ -396,7 +465,7 @@ void SceneMgr::UpdateObjects(float elapsedTime)
 {
 	// 북쪽 진영 캐릭터 생성
 	plusElapsedTime(elapsedTime / 1000.0f);
-	if (getElapsedTime() >= 0.5f) // 0.5초 마다 Team1 캐릭터 생성
+	if (getElapsedTime() >= 1.0f) // 0.5초 마다 Team1 캐릭터 생성
 	{
 		setElapsedTime(0.0f);
 		BuildObjects
@@ -453,7 +522,7 @@ void SceneMgr::UpdateObjects(float elapsedTime)
 		for (m_iter_building = m_BuildingObj_List.begin(); m_iter_building != m_BuildingObj_List.end(); ++m_iter_building)
 		{
 			m_iter_building->plusObjectCoolTime(elapsedTime / 1000.0f);
-			if (m_iter_building->getObjectCoolTime() >= 2.0f) // 2.0초 마다 총알 생성
+			if (m_iter_building->getObjectCoolTime() >= 3.0f) // 3.0초 마다 총알 생성
 			{
 				m_iter_building->setObjectCoolTime(0.0f);
 				BuildObjects(m_iter_building->getObjectPosition_X(), m_iter_building->getObjectPosition_Y(), m_iter_building->getObjectID(), OBJECT_BULLET);
@@ -466,7 +535,9 @@ void SceneMgr::UpdateObjects(float elapsedTime)
 	{
 		for (m_iter_bullet = m_BulletObj_List.begin(); m_iter_bullet != m_BulletObj_List.end(); ++m_iter_bullet)
 		{
+			m_iter_bullet->IsArrived();
 			m_iter_bullet->update(elapsedTime);
+
 			Collider bull = m_iter_bullet->getObjectCollider();
 			if (bull.maxX > WINDOWSIZE_WIDTH / 2 || bull.minX < -WINDOWSIZE_WIDTH / 2
 				|| bull.maxY > WINDOWSIZE_HEIGHT / 2 || bull.minY < -WINDOWSIZE_HEIGHT / 2)
