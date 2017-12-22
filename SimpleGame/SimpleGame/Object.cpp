@@ -63,7 +63,7 @@ Vector2D Object::GetDirectionVector(Vector2D pObjectPos)
 void Object::SetTarget(list<Object>* pTargetlist)
 {
 	float distance;
-	float minDistance = 10000000;
+	float minDistance = 10000000.0f;
 	list<Object>::iterator temp_iter;
 	bool is_found = false;
 

@@ -18,7 +18,8 @@ but WITHOUT ANY WARRANTY.
 float g_prevTime = 0.0f;
 float currTime = 0.0f;
 float elapsedTime = 0.0f;
-float coolTime = 1.0f;
+float char_coolTime = TEAM2_UNIT_COOLTIME;
+float dragon_coolTime = TEAM2_DRAGON_COOLTIME;
 SceneMgr* g_SceneMgr = NULL;
 
 void RenderScene(void)
@@ -28,11 +29,17 @@ void RenderScene(void)
 
 	currTime = timeGetTime();
 	elapsedTime = currTime - g_prevTime;
-	coolTime += elapsedTime/1000.f;
 
+	if (char_coolTime <= TEAM2_UNIT_COOLTIME)
+		char_coolTime += elapsedTime/1000.f;
+	else char_coolTime = TEAM2_UNIT_COOLTIME;
+
+	if (dragon_coolTime <= TEAM2_DRAGON_COOLTIME)
+		dragon_coolTime += elapsedTime / 1000.f;
+	else dragon_coolTime = TEAM2_DRAGON_COOLTIME;
 
 	g_SceneMgr->UpdateObjects(elapsedTime);
-	g_SceneMgr->DrawObjects(elapsedTime);
+	g_SceneMgr->DrawObjects(elapsedTime, char_coolTime, dragon_coolTime);
 	g_prevTime = currTime;
 
 	glutSwapBuffers();
@@ -45,11 +52,18 @@ void Idle(void)
 
 void MouseInput(int button, int state, int x, int y)
 {
-	// 클릭 시 해당 위치에 캐릭터 생성
-	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && coolTime >= 0.5f &&  WINDOWSIZE_HEIGHT / 2 - y < 0)
+	// 좌클릭 시 해당 위치에 캐릭터 생성
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN && char_coolTime >= TEAM2_UNIT_COOLTIME &&  WINDOWSIZE_HEIGHT / 2 - y < 0)
 	{
-		coolTime = 0.0f;
-		g_SceneMgr->BuildObjects(x - WINDOWSIZE_WIDTH / 2, WINDOWSIZE_HEIGHT/ 2 - y, OBJECT_TEAM_2, OBJECT_CHARACTER);
+		char_coolTime = 0.0f;
+		g_SceneMgr->BuildObjects(x - WINDOWSIZE_WIDTH / 2, WINDOWSIZE_HEIGHT/ 2 - y, OBJECT_TEAM_2, OBJECT_CHARACTER, 0);
+	}
+
+	// 우클릭 시 해당 위치에 드래곤 생성
+	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN && dragon_coolTime >= TEAM2_DRAGON_COOLTIME &&  WINDOWSIZE_HEIGHT / 2 - y < 0)
+	{
+		dragon_coolTime = 0.0f;
+		g_SceneMgr->BuildObjects(x - WINDOWSIZE_WIDTH / 2, WINDOWSIZE_HEIGHT / 2 - y, OBJECT_TEAM_2, OBJECT_CHARACTER, UNITTYPE_DRAGON);
 	}
 	RenderScene();
 }

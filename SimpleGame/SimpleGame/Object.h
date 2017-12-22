@@ -27,6 +27,7 @@ private:
 	float m_objectSpeed;
 
 	float m_objectLife;
+	float m_objectDamage;
 	bool m_objectIsDead = false;
 
 	float m_renderLevel;
@@ -96,10 +97,13 @@ public:
 	}
 	void WallCollision();
 
-	void damageObjcetLife(float l) { m_objectLife += l; if (m_objectLife <= 0.0f) m_objectIsDead = true; };
+	void damageObjcetLife(float d) { m_objectLife -= d; if (m_objectLife <= 0.0f) m_objectIsDead = true; };
 
 	void setObjcetLife(float l) { m_objectLife = l;};
 	float getObjectLife() const { return m_objectLife; };
+	void setObjcetDamage(float l) { m_objectDamage = l; };
+	float getObjectDamage() const { return m_objectDamage; };
+
 	bool getObjectIsDead() const { return m_objectIsDead; };
 	void setObjectIsDead(bool d) { m_objectIsDead = d; };
 
